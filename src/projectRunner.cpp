@@ -46,9 +46,9 @@ void ProjectRunner::render(){
 }
 void ProjectRunner::BuildBasicEnviroment(){
 
-    DebugCube *pCube1 = new DebugCube(glm::vec3(-1), glm::vec3(5, 0.25, 5), glm::vec3(0.0f));
+    DebugCube *pCube1 = new DebugCube(glm::vec3(-1), glm::vec3(5, 0.25, 5), glm::vec3(50));
 
-    pCube1->setName("Ground");
+    pCube1->SetName("Ground");
 
     pCube1->SetShader("Data/Shader/groundShader.vsh", "Data/Shader/groundShader.fsh");  //Needs to be called before init
 
@@ -58,4 +58,16 @@ void ProjectRunner::BuildBasicEnviroment(){
 
     Scene::Instance().AddNode(pCube1);
 
+    // Bulding a BB
+    BillBoard *pBB1 = new BillBoard(glm::vec3(0), glm::vec3(1), glm::vec3(0.0));
+
+    pBB1->SetName("BillBoard");
+
+    //Don't need to bother with the shader
+
+    pBB1->SetColor(glm::vec4(1, 1, 1, 1)); // White
+
+    pBB1->Init();
+
+    Scene::Instance().AddNode(pBB1);
 }

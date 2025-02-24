@@ -72,7 +72,7 @@ void Scene::Render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glEnable(GL_CULL_FACE); //Culls the faces on the inside of nodes
-
+    glEnable(GL_DEPTH_TEST);
 
     glm::mat4 proj = GetActiveCamera()->getProjMatrix();
     glm::mat4 view = GetActiveCamera()->getViewMatrix();

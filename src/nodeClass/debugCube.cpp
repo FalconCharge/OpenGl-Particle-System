@@ -5,7 +5,7 @@ DebugCube::DebugCube(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation) : 
     SetLocalPosition(position);
     SetLocalScale(scale);
     SetLocalRotation(rotation);
-    setName("DebugCube");
+    SetName("DebugCube");
 
 }
 DebugCube::~DebugCube(){

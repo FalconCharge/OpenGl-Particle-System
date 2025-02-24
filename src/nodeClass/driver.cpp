@@ -92,13 +92,13 @@ void Driver::TestFrustum(){
        glm::vec3 rotation = glm::vec3(0.0f); // No rotation for now (This would mess up the AABB's on the Cubes)
 
        DebugCube* parentCube = new DebugCube(position, scale, rotation);
-       parentCube->setColor(glm::vec4(
+       parentCube->SetColor(glm::vec4(
            static_cast<float>(rand()) / RAND_MAX, // Random R
            static_cast<float>(rand()) / RAND_MAX, // Random G
            static_cast<float>(rand()) / RAND_MAX, // Random B
            1.0f  // Alpha = 1
        ));
-       parentCube->setName("Parent Cube " + std::to_string(i));
+       parentCube->SetName("Parent Cube " + std::to_string(i));
        parentCube->Init();
        parentCubes.push_back(parentCube);
    }
@@ -117,13 +117,13 @@ void Driver::TestFrustum(){
            glm::vec3 childRotation = glm::vec3(0.0f);
 
            DebugCube* childCube = new DebugCube(childPosition, childScale, childRotation);
-           childCube->setColor(glm::vec4(
+           childCube->SetColor(glm::vec4(
             (rand() % 256) / 255.0f,  
             (rand() % 256) / 255.0f, 
             (rand() % 256) / 255.0f, 
             1.0f));
                     
-           childCube->setName(parent->GetName() + " Child " + std::to_string(j));
+           childCube->SetName(parent->GetName() + " Child " + std::to_string(j));
            parent->AddChild(childCube);
 
            childCube->Init();
@@ -139,24 +139,24 @@ void Driver::TestFrustum(){
 void Driver::GenerateObjects1(){
     // Create a paretn cube
     DebugCube *pCube1 = new DebugCube(glm::vec3(8), glm::vec3(0.5f), glm::vec3(0.0f));
-    pCube1->setColor(glm::vec4(0, 1, 0, 1));
-    pCube1->setName("Cube 1");
+    pCube1->SetColor(glm::vec4(0, 1, 0, 1));
+    pCube1->SetName("Cube 1");
 
     // Create a second parent cube
     DebugCube *pCube2 = new DebugCube(glm::vec3(-8), glm::vec3(1.0f), glm::vec3(0.0f));
-    pCube2->setColor(glm::vec4(1, 0, 0, 1));
-    pCube2->setName("Cube 2");
+    pCube2->SetColor(glm::vec4(1, 0, 0, 1));
+    pCube2->SetName("Cube 2");
 
     // Create a child cube
     DebugCube *pCube2Child = new DebugCube(glm::vec3(-3.0f), glm::vec3(0.5f), glm::vec3(0.0f));
-    pCube2Child->setColor(glm::vec4(0, 0, 1, 1));
-    pCube2Child->setName("Cube 2 child");
+    pCube2Child->SetColor(glm::vec4(0, 0, 1, 1));
+    pCube2Child->SetName("Cube 2 child");
     pCube2->AddChild(pCube2Child);
 
     // Create a second child cube
     DebugCube *pCube3Child = new DebugCube(glm::vec3(3.0f, 2.0f, 1.0f), glm::vec3(1), glm::vec3(0.0f));
-    pCube3Child->setColor(glm::vec4(0, 1, 1, 1));
-    pCube3Child->setName("Cube 3 child");
+    pCube3Child->SetColor(glm::vec4(0, 1, 1, 1));
+    pCube3Child->SetName("Cube 3 child");
     pCube2Child->AddChild(pCube3Child);
     pCube2Child->AddChild(pCube1);
 
@@ -197,13 +197,13 @@ void Driver::Generate100Cubes(){
         glm::vec3 rotation = glm::vec3(0.0f); // No rotation for now
 
         DebugCube* parentCube = new DebugCube(position, scale, rotation);
-        parentCube->setColor(glm::vec4(
+        parentCube->SetColor(glm::vec4(
             static_cast<float>(rand()) / RAND_MAX, // Random R
             static_cast<float>(rand()) / RAND_MAX, // Random G
             static_cast<float>(rand()) / RAND_MAX, // Random B
             1.0f  // Alpha = 1
         ));
-        parentCube->setName("Parent Cube " + std::to_string(i));
+        parentCube->SetName("Parent Cube " + std::to_string(i));
 
         parentCube->Init();
         parentCubes.push_back(parentCube);
@@ -234,13 +234,13 @@ void Driver::GenerateObjects(){
         glm::vec3 rotation = glm::vec3(0.0f); // No rotation for now
 
         DebugCube* parentCube = new DebugCube(position, scale, rotation);
-        parentCube->setColor(glm::vec4(
+        parentCube->SetColor(glm::vec4(
             static_cast<float>(rand()) / RAND_MAX, // Random R
             static_cast<float>(rand()) / RAND_MAX, // Random G
             static_cast<float>(rand()) / RAND_MAX, // Random B
             1.0f  // Alpha = 1
         ));
-        parentCube->setName("Parent Cube " + std::to_string(i));
+        parentCube->SetName("Parent Cube " + std::to_string(i));
 
         parentCube->Init();
         parentCubes.push_back(parentCube);
@@ -261,13 +261,13 @@ void Driver::GenerateObjects(){
             glm::vec3 childRotation = glm::vec3(0.0f);
 
             DebugCube* childCube = new DebugCube(childPosition, childScale, childRotation);
-            childCube->setColor(glm::vec4(
+            childCube->SetColor(glm::vec4(
                 static_cast<float>(rand()) / RAND_MAX,
                 static_cast<float>(rand()) / RAND_MAX,
                 static_cast<float>(rand()) / RAND_MAX,
                 1.0f
             ));
-            childCube->setName(parent->GetName() + " Child " + std::to_string(j));
+            childCube->SetName(parent->GetName() + " Child " + std::to_string(j));
             parent->AddChild(childCube);
 
             childCube->Init();

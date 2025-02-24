@@ -27,10 +27,10 @@ class Node{
         void AddChild(Node* newChild);
 
         // Setters      
-        void setName(const std::string newName){m_name = newName;}                              
+        void SetName(const std::string newName){m_name = newName;}                              
         void setTransform(glm::mat4 newMatrix){m_transform = newMatrix;}            
         void SetParent(Node* newParent);          
-        void setColor(glm::vec4 color){m_color = color;}
+        void SetColor(glm::vec4 color){m_color = color;}
         void SetVolume(AABB& vol){m_pVolume = &vol;}
         void SetDirty(bool dirty){m_isDirty = dirty;}
         

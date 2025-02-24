@@ -14,13 +14,14 @@ class DebugCube : public Node{
         ~DebugCube();
 
         // Initalizes the cube
-        void Init();
-
+        void Init();    
+        
         void Render(glm::mat4 proj, glm::mat4 view) override;
+
         void Update(float fDelta) override;
 
         void setShader(wolf::Program* shader){m_pProgram = shader;}
-        
+
         void SetShader(const std::string& vshPath, const std::string& fshPath);
         void SetTexture(const std::string& path);
 
