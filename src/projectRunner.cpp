@@ -45,7 +45,6 @@ void ProjectRunner::render(){
     Scene::Instance().Render();
 }
 void ProjectRunner::BuildBasicEnviroment(){
-
     DebugCube *pCube1 = new DebugCube(glm::vec3(-1), glm::vec3(5, 0.25, 5), glm::vec3(50));
 
     pCube1->SetName("Ground");
@@ -59,15 +58,35 @@ void ProjectRunner::BuildBasicEnviroment(){
     Scene::Instance().AddNode(pCube1);
 
     // Bulding a BB
-    BillBoard *pBB1 = new BillBoard(glm::vec3(0), glm::vec3(1), glm::vec3(0.0));
+    BillBoard *pBB1 = new BillBoard(glm::vec3(5, 5, 5), glm::vec3(1), glm::vec3(0.0));
 
     pBB1->SetName("BillBoard");
 
     //Don't need to bother with the shader
 
-    pBB1->SetColor(glm::vec4(1, 1, 1, 1)); // White
+    pBB1->SetColor(glm::vec4(0, 0, 0, 1)); // White
+    pBB1->SetTexture("Data/textures/particles/smoke_01.png");
+
+    pBB1->SetShader("Data/Shader/DebugCube.vsh", "Data/Shader/DebugCube.fsh");
 
     pBB1->Init();
 
     Scene::Instance().AddNode(pBB1);
+
+    //Building Point pixels
+    PointBB *pPBB1 = new PointBB(glm::vec3(2), glm::vec3(1), glm::vec3(0.0));
+
+    pPBB1->SetName("BB with points");
+
+    //Don't need to bother with the shader
+
+    pPBB1->SetColor(glm::vec4(0, 0, 0, 1)); // White
+    pPBB1->SetTexture("Data/textures/particles/smoke_01.png");
+
+    pPBB1->SetShader("Data/Shader/glPoint.vsh", "Data/Shader/glPoint.fsh");
+
+    pPBB1->Init();
+
+    Scene::Instance().AddNode(pPBB1);
 }
+

@@ -3,18 +3,52 @@
 #include "../../wolf/wolf.h"
 #include <string>
 
+#include "../nodeClass/scene.h"    //A singleton which stores the instance of the scene
+
+#include "../nodeClass/node.h"
+#include "../nodeClass/debugCube.h"
+#include "billBoard.h"
+#include "pointBB.h"
+
+#include "circleShapeParticle.h"
+
 //Helper for the runner
 int RunParticleSystemDemo();
 
 class ParticleDriver : public wolf::App {
     public:
+        // Constructor
         ParticleDriver(const std::string& name);
+        // Deconstructor
+        ~ParticleDriver();
 
-        //I'd like to go into wolf sometime to change the update --> Update and render --> Render;
-        void render() override;
-        void update(float p_fDelta) override;
+        /*
+        // Creates a Instance of our scene
+        // Init sets up the Main FPS camera
+        // Builds the OctTree
+        */
         void Init();
 
-    private:
+        /*
+        // Updates all the Nodes within the Scene Instance
+        // This method is also overrides a call from wolf and is called every frame
+        // In the parameter we have a float which provides the delta of the last and recent frame
+        */
+        void update(float p_fDelta) override;
 
+        /*
+        // Renders all the Nodes within the Scene Instance
+        // This method overrides from a call in wolf which is called each frame
+        */
+        void render() override;
+
+
+
+    private:
+        // Starts the build for the demo enviroment
+        void BuildDemoEnviroment();
+        
+        // Builds a Smoke Object
+        void BuildSmoke();
+        Camera* m_pMainCamera;
 };

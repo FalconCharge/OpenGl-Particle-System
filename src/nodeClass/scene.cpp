@@ -71,8 +71,10 @@ void Scene::Render(){
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    //Should these be moved to init?
     glEnable(GL_CULL_FACE); //Culls the faces on the inside of nodes
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);    // Enables depth testing Makes it so we can't see through objects
+
 
     glm::mat4 proj = GetActiveCamera()->getProjMatrix();
     glm::mat4 view = GetActiveCamera()->getViewMatrix();

@@ -7,10 +7,10 @@ int main(){
     //return RunDemoNodeClass();
 
     // Start the demo of the Particle System assignment Which is As of now not implemented to work
-    //return RunParticleSystemDemo();
+    return RunParticleSystemDemo();
 
     // Start the main Runner of this System
-    return RunMainProject();
+    //return RunMainProject();
 }
 
 // Note that I could probably move the helper methods in each class into here;

@@ -8,6 +8,7 @@
 #include "nodeClass/node.h"
 #include "nodeClass/debugCube.h"
 #include "particleSystem/billBoard.h"
+#include "particleSystem/pointBB.h"
 
 int RunMainProject();
 
