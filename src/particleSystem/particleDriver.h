@@ -9,6 +9,7 @@
 #include "../nodeClass/debugCube.h"
 #include "billBoard.h"
 #include "pointBB.h"
+#include "effect.h"
 
 #include "circleShapeParticle.h"
 
@@ -47,8 +48,10 @@ class ParticleDriver : public wolf::App {
     private:
         // Starts the build for the demo enviroment
         void BuildDemoEnviroment();
-        
+        // Create an emitter
+        void CreateEffect();
         // Builds a Smoke Object
         void BuildSmoke();
+
         Camera* m_pMainCamera;
 };

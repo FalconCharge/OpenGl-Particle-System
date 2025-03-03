@@ -46,7 +46,8 @@ void ParticleDriver::Init(){
 }
 
 void ParticleDriver::BuildDemoEnviroment(){
-    BuildSmoke();
+    //BuildSmoke(); Deprecated!! I finally can use the word!
+    CreateEffect();
 
     
     DebugCube *pCube1 = new DebugCube(glm::vec3(0, -5, 0), glm::vec3(5, 0.25, 5), glm::vec3(0));
@@ -62,46 +63,24 @@ void ParticleDriver::BuildDemoEnviroment(){
     Scene::Instance().AddNode(pCube1);
 }
 void ParticleDriver::BuildSmoke(){
-    CircleShapeParticle* smoke = new CircleShapeParticle(glm::vec3(0));
+    CircleShapeParticle* smoke = new CircleShapeParticle(glm::vec3(20));
 
     smoke->Init();
     smoke->SetName("Parent Of smoke1");
 
     Scene::Instance().AddNode(smoke);
 
-    CircleShapeParticle* smoke2 = new CircleShapeParticle(glm::vec3(1, 1, 0));
-
-    smoke2->Init();
-    smoke2->SetName("Parent Of smoke2");
-
-    Scene::Instance().AddNode(smoke2);
-
-    CircleShapeParticle* smoke3 = new CircleShapeParticle(glm::vec3(-1, -1, 0));
-
-    smoke3->Init();
-    smoke3->SetName("Parent Of smoke3");
-
-    Scene::Instance().AddNode(smoke3);
-
-    CircleShapeParticle* smoke4 = new CircleShapeParticle(glm::vec3(0, 1, 0));
-
-    smoke4->Init();
-    smoke4->SetName("Parent Of smoke4");
-
-    Scene::Instance().AddNode(smoke4);
-
-    CircleShapeParticle* smoke5 = new CircleShapeParticle(glm::vec3(1, 0, 0));
-
-    smoke5->Init();
-    smoke5->SetName("Parent Of smoke5");
-
-    Scene::Instance().AddNode(smoke5);
-
-    CircleShapeParticle* smoke6 = new CircleShapeParticle(glm::vec3(2, 2, 0));
-
-    smoke6->Init();
-    smoke6->SetName("Parent Of smoke6");
-
-    Scene::Instance().AddNode(smoke6);
-
 }
+void ParticleDriver::CreateEffect(){
+    Effect* m_pEffect = new Effect();
+
+    //Create the emitter
+    Emitter* emitter = new Emitter();
+    emitter->Init();    // Creates Pool
+    emitter->Play();    // Starts Playing particles
+
+    m_pEffect->AddEmitter(emitter);
+
+    Scene::Instance().AddNode(m_pEffect);
+}
+

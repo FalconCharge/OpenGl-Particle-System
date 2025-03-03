@@ -72,7 +72,8 @@ void ProjectRunner::BuildBasicEnviroment(){
     pBB1->Init();
 
     Scene::Instance().AddNode(pBB1);
-
+    // NO longer works since I stop deriveing from node
+    /*
     //Building Point pixels
     PointBB *pPBB1 = new PointBB(glm::vec3(2), glm::vec3(1), glm::vec3(0.0));
 
@@ -88,5 +89,6 @@ void ProjectRunner::BuildBasicEnviroment(){
     pPBB1->Init();
 
     Scene::Instance().AddNode(pPBB1);
+    */
 }
 

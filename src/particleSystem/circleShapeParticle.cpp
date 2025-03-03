@@ -15,38 +15,15 @@ void CircleShapeParticle::Init(){
 
     //Init the particles with there vertex points
     pPBB1 = new PointBB(glm::vec3(0, 0, 0));
-    pPBB1->SetVertices(GenerateCirclePoints(400000));
-    pPBB1->SetName("Most Dense");
-    pPBB1->SetColor(glm::vec4(0, 0, 0, 1)); // Black
-
-
-    pPBB2 = new PointBB(glm::vec3(0, 0, 0));
-    pPBB2->SetVertices(GenerateCirclePoints(2000));
-    pPBB2->SetName("Mid Dense");
-    pPBB2->SetColor(glm::vec4(0, 0, 0, 1)); // Black
-
-
-    pPBB3 = new PointBB(glm::vec3(0, 0, 0));
-    pPBB3->SetVertices(GenerateCirclePoints(1000));
-    pPBB3->SetName("Least Dense");
-    pPBB3->SetColor(glm::vec4(0, 0, 0, 1)); // Black
-
+    pPBB1->SetVertices(GenerateCirclePoints(4000));
 
 
     pPBB1->SetTexture("Data/textures/particles/smoke_01.png");
     pPBB1->SetShader("Data/Shader/glPoint.vsh", "Data/Shader/glPoint.fsh");
-    pPBB2->SetTexture("Data/textures/particles/smoke_01.png");
-    pPBB2->SetShader("Data/Shader/glPoint.vsh", "Data/Shader/glPoint.fsh");
-    pPBB3->SetTexture("Data/textures/particles/smoke_01.png");
-    pPBB3->SetShader("Data/Shader/glPoint.vsh", "Data/Shader/glPoint.fsh");
 
-    this->AddChild(pPBB1);
-    this->AddChild(pPBB2);
-    this->AddChild(pPBB3);
 
     pPBB1->Init();
-    pPBB2->Init();
-    pPBB3->Init();
+
 
     SetVolume(CalculateVolume());
 
@@ -90,7 +67,7 @@ std::vector<PointBBVertex> CircleShapeParticle::GenerateCirclePoints(int p_iNumO
         // Random spherical coordinates
         float theta = static_cast<float>(rand()) / RAND_MAX * 2.0f * PI; // Random azimuthal angle (0 to 2π)
         float phi = static_cast<float>(rand()) / RAND_MAX * PI;          // Random polar angle (0 to π)
-        float radius = 5.0f;
+        float radius = 1.0f;
 
         // Convert spherical to Cartesian coordinates
         float x = radius * std::sin(phi) * std::cos(theta);

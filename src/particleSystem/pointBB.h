@@ -2,12 +2,14 @@
 
 #include "../../wolf/wolf.h"
 #include "../nodeClass/scene.h"
+#include "emitter.h"
+#include "particle.h"
 
 struct PointBBVertex{
     GLfloat x,y,z;       // Position Cords
 };
 
-class PointBB : public Node{
+class PointBB : public Particle{
 
     public:
         // Constructor
@@ -21,10 +23,6 @@ class PointBB : public Node{
 
         // Initlizes the values for the BB
         void Init();
-        // Renders the BB
-        void Render(glm::mat4 proj, glm::mat4 view) override;
-        // Performs Updates each frame on the BB
-        void Update(float p_fDelta) override;
 
         // Creates a new Texture within the BB
         void SetTexture(const std::string& texturePath);
@@ -35,8 +33,6 @@ class PointBB : public Node{
         // Sets a new shader to this BB
         void SetShader(wolf::Program* p_pShader){m_pProgram = p_pShader;};
 
-        // Returns a AABB that surrounding this object
-        AABB& CalculateVolume() override;
 
         // Updates the VB data Used If we have a new shader or texture to apply to the BillBoard
         void UpdateVerts();
@@ -45,9 +41,6 @@ class PointBB : public Node{
 
 
     private:
-
-        void FaceCamera();
-
 
         //wolf 
         wolf::Program* m_pProgram = nullptr;
@@ -59,8 +52,6 @@ class PointBB : public Node{
         std::vector<PointBBVertex> normalVertices;
         //std::vector<unsigned short> cubeIndices;
 
-        //The bounds of the BillBoard
-        AABB m_bounds;
 
 
 

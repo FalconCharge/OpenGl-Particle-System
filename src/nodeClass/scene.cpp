@@ -68,7 +68,7 @@ void Scene::SetActiveCamera(Camera* pCam){
 
 void Scene::Render(){
     // Clear the screen
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Should these be moved to init?
@@ -89,9 +89,9 @@ void Scene::Render(){
                 aabb->Render(view, proj);
             }
         }
-    }
-    if(m_bRenderCubes){
-        for(Node* node : m_objectsToRender){
+    }else{
+        // Renders everything that was added as a node used to be m_objectToRener
+        for(Node* node : m_nodes){
             node->Render(proj, view);
         }
     }
