@@ -39,7 +39,7 @@ private:
     // Vertex structure for a single particle.
 
     // Generates particle positions arranged in a circle (using polar coordinates).
-    std::vector<PointBBVertex> GenerateCirclePoints(int numOfPoints);
+    //std::vector<PointBBVertex> GenerateCirclePoints(int numOfPoints);
 
     // Axis-aligned bounding box for the particle system (for culling, etc.).
     AABB m_bounds;

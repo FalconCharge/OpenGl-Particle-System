@@ -39,7 +39,7 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::Write(const void* p_pData, int p_iLength)
 {
 	Bind();
-	glBufferData(GL_ARRAY_BUFFER, p_iLength == -1 ? m_uiLength : p_iLength, p_pData, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, p_iLength == -1 ? m_uiLength : p_iLength, p_pData, GL_DYNAMIC_DRAW);	// Used to be static
 }
 
 //----------------------------------------------------------

@@ -5,18 +5,12 @@
 #include "emitter.h"
 #include "particle.h"
 
-struct PointBBVertex{
-    GLfloat x,y,z;       // Position Cords
-};
 
 class PointBB : public Particle{
 
     public:
         // Constructor
         PointBB();
-        // constructor with poisitonal parameters
-        PointBB(glm::vec3 position, glm::vec3 scale, glm::vec3 rotation);
-        PointBB(glm::vec3 position);
 
         // Deconstructor
         ~PointBB();
@@ -24,35 +18,41 @@ class PointBB : public Particle{
         // Initlizes the values for the BB
         void Init();
 
-        // Creates a new Texture within the BB
-        void SetTexture(const std::string& texturePath);
-        // Sets a new Texture to this BB
-        void SetTexture(wolf::Texture* p_pTexture){m_pTexture = p_pTexture;}
-        // Creates a new shader within the BB
-        void SetShader(const std::string& vshPath, const std::string& fshPath);
-        // Sets a new shader to this BB
-        void SetShader(wolf::Program* p_pShader){m_pProgram = p_pShader;};
+        void Update(float p_fDelta);
 
+        // Setters
+        void SetPosition(glm::vec3 position){m_position = position;}
+        void SetRotation(glm::vec3 rotation){m_rotation = rotation;}
+        void SetScale(glm::vec3 scale){m_scale = scale;}
+        void SetSize(float size){m_size = size;}
+        void SetVelocity(glm::vec3 velocity){m_velocity = velocity;}
+        void SetIsExpired(bool expired){m_isExpired = expired;}
+        void ResetPoint();
 
-        // Updates the VB data Used If we have a new shader or texture to apply to the BillBoard
-        void UpdateVerts();
+        
 
-        void SetVertices(std::vector<PointBBVertex> normalVertices);
+        // Getters
+        glm::vec3 GetPosition(){return m_position;}
+        glm::vec3 GetScale(){return m_scale;}
+        glm::vec3 GetRotation(){return m_rotation;}
+        glm::vec3 GetVelocity(){return m_velocity;}
+        float GetSize(){return m_size;}
+        bool IsExpired(){return m_isExpired;}
+
 
 
     private:
+        glm::vec3 m_position;
+        glm::vec3 m_scale;
+        glm::vec3 m_rotation;
+        glm::vec3 m_velocity;
 
-        //wolf 
-        wolf::Program* m_pProgram = nullptr;
-        wolf::VertexBuffer* m_pVB = nullptr;
-        //wolf::IndexBuffer* m_pIB = nullptr;
-        wolf::Texture* m_pTexture = nullptr;
-        wolf::VertexDeclaration* m_pDecl = nullptr;
+        float m_size = 20;
 
-        std::vector<PointBBVertex> normalVertices;
-        //std::vector<unsigned short> cubeIndices;
+        float m_timeAlive = 0.0f;
+        float m_maxTimeAlive = 3.0f;
 
-
+        bool m_isExpired = false;
 
 
 };

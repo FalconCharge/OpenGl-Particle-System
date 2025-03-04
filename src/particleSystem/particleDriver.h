@@ -10,8 +10,14 @@
 #include "billBoard.h"
 #include "pointBB.h"
 #include "effect.h"
+#include "boxEmitter.h"
 
 #include "circleShapeParticle.h"
+
+//Affectors
+#include "movementAffectors.h"
+#include "gravityAffector.h"
+#include "lifeTimeAffector.h"
 
 //Helper for the runner
 int RunParticleSystemDemo();

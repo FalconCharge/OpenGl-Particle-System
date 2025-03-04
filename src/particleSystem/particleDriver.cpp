@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+
 int RunParticleSystemDemo(){
     ParticleDriver app("Particle System Demo");
     app.run();
@@ -24,9 +25,11 @@ void ParticleDriver::render(){
     Scene::Instance().Render();
 }
 void ParticleDriver::Init(){
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    
     //Transparcy
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Builds the tree for the scene
     //Scene::Instance().BuildOctTree(); Ben personally doesn't want to do this right now: Feb.24
@@ -75,11 +78,20 @@ void ParticleDriver::CreateEffect(){
     Effect* m_pEffect = new Effect();
 
     //Create the emitter
-    Emitter* emitter = new Emitter();
-    emitter->Init();    // Creates Pool
-    emitter->Play();    // Starts Playing particles
+    BoxEmitter* emitter = new BoxEmitter();
+
+    MoveForwardAffector* forward = new MoveForwardAffector(4);
+    emitter->AddAffector(forward);
+
+    GravityAffector* graivty = new GravityAffector(4.81f);
+    emitter->AddAffector(graivty);
 
     m_pEffect->AddEmitter(emitter);
+
+    
+
+    m_pEffect->Init();  // Init all the emitters
+    m_pEffect->Play();  // Start playing all emitters
 
     Scene::Instance().AddNode(m_pEffect);
 }

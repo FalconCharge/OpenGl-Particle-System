@@ -12,7 +12,7 @@ CircleShapeParticle::~CircleShapeParticle(){
     
 }
 void CircleShapeParticle::Init(){
-
+/*
     //Init the particles with there vertex points
     pPBB1 = new PointBB(glm::vec3(0, 0, 0));
     pPBB1->SetVertices(GenerateCirclePoints(4000));
@@ -27,7 +27,7 @@ void CircleShapeParticle::Init(){
 
     SetVolume(CalculateVolume());
 
-
+*/
 }
 void CircleShapeParticle::Update(float p_fDelta){
     Node::Update(p_fDelta);   // Not sure if this should be here or not
@@ -56,7 +56,7 @@ AABB& CircleShapeParticle::CalculateVolume() {
     return m_bounds;
 }
 
-// Pretty complex
+/*/ Pretty complex
 std::vector<PointBBVertex> CircleShapeParticle::GenerateCirclePoints(int p_iNumOfParticles){
 
     //Generate a random X, y, z position within the circle
@@ -81,5 +81,5 @@ std::vector<PointBBVertex> CircleShapeParticle::GenerateCirclePoints(int p_iNumO
 
     //Turn them values in to a 
     return newPoints;
-}
+}*/
 

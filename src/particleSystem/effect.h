@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../nodeClass/node.h"
+#include "../../wolf/wolf.h"
 #include "emitter.h"
 
 /*
@@ -25,5 +26,14 @@ class Effect : public Node{
 
     private:
         std::vector<Emitter*> m_pEmitters;
-        AABB* m_bounds = nullptr;
+        AABB m_bounds;
+
+
+        // For Rendering
+        void SetupRendering();
+        void FlushVB(wolf::Material* currentMaterial, const std::vector<Point>& vertices);
+        wolf::VertexDeclaration* m_pDecl = nullptr; // Declartion
+        wolf::VertexBuffer* m_pVB = nullptr;        // Vertex buffer
+        wolf::Texture* m_pTexture = nullptr;        // Texture of the point
+
 };
