@@ -62,21 +62,22 @@ void Emitter::SpawnParticle(){
     // If not free Particle, Kill one from the active list
     if(!p){
         if(m_pActiveList){
-            return;
-            Particle* pToRecycle = m_pActiveList;
-            RecycleParticle(pToRecycle);
+            Particle* tail = m_pActiveList;
+            while(tail->next){
+                tail = tail->next;
+            }
+
+            RecycleParticle(tail);
             // Get the free Particle now
             p = GetFreeParticle();
             std::cout << "Got free particle through recycling" << std::endl;
         }
     }
 
-    // Get random positions to spawn the Point at
-    SetRandomPosition(p);
-
     if(p){
+        // Get random positions to spawn the Point at
+        SetRandomPosition(p);
         AddToActive(p);
-        PointBB* point = static_cast<PointBB*>(p);
     }else{
         std::cout << "[ERROR] no particles to spawn" << std::endl;
     }
@@ -188,29 +189,33 @@ void Emitter::AddToActive(Particle* p) {
 }
 // Removes a particle from the active list.
 void Emitter::RemoveFromActive(Particle* p) {
-    // If the particle is the tail of the list
-    if (p->next == nullptr) {
-        // The particle is the tail, so update the second-to-last particle's next pointer to nullptr
-        if (p->prev) {
-            p->prev->next = nullptr;
-        }
-        // Update m_pActiveList to point to the head if there was only one particle
-        if (p == m_pActiveList) {
-            m_pActiveList = nullptr;
-        }
-    } else {
-        // If the particle is not the tail, update the previous and next links
-        if (p->prev) {
-            p->prev->next = p->next;  // Link the previous particle to the next particle
-        }
-        if (p->next) {
-            p->next->prev = p->prev;  // Link the next particle to the previous particle
-        }
-    }
+    if (p->prev)
+        p->prev->next = p->next;
+    else
+        m_pActiveList = p->next;  // p was the head.
 
-    // Detach the particle by setting its prev and next to nullptr
+    if (p->next)
+        p->next->prev = p->prev;
+    
     p->prev = nullptr;
     p->next = nullptr;
+}
+void Emitter::RemoveTail(){
+    if(m_pActiveList == nullptr) return;
+
+    if(m_pActiveList->next = nullptr){
+        m_pActiveList = nullptr;
+    }else{
+        Particle* tail = m_pActiveList;
+        while(tail->next){
+            tail = tail->next;
+        }
+        if(tail->prev){
+            tail->prev->next = nullptr;
+        }
+        tail->next = nullptr;
+        tail->prev = nullptr;
+    }
 }
 
 

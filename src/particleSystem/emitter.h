@@ -13,7 +13,7 @@ struct Point{
 
 class Emitter{
     public:
-        const int NUM_OF_PARTICLES_IN_POOL = 20;
+        const int NUM_OF_PARTICLES_IN_POOL = 2;
 
         Emitter();
         ~Emitter(){}
@@ -47,7 +47,7 @@ class Emitter{
         std::string m_sMode = "CONTINUOUS";
 
         // Variables for burst emission.
-        float m_birthRate = 8.0f;
+        float m_birthRate = 1.0f;
         float m_fBurstTime = 0.0f;
         float m_fBurstTimeMin = 0.0f;
         float m_fBurstTimeMax = 2.0f;
