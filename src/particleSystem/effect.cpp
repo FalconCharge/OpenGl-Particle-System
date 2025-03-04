@@ -8,6 +8,7 @@ Effect::Effect(){
     // Creates an effect with certain paramets I think
     SetVolume(CalculateVolume());
     //glEnable(GL_DYNAMIC_DRAW); // Use when flushing the VB
+    SetWorldPosition(glm::vec3(0));
 
     SetupRendering();
 }
@@ -122,7 +123,8 @@ void Effect::SetupRendering(){
     m_pDecl = new wolf::VertexDeclaration();
 
     m_pDecl->Begin();
-    m_pDecl->AppendAttribute(wolf::AT_Position, 3, wolf::CT_Float);     // Pos attr
+    m_pDecl->AppendAttribute(wolf::AT_Position, 4, wolf::CT_Float);     // Pos attr
+    m_pDecl->AppendAttribute(wolf::AT_TexCoord1, 1, wolf::CT_Float);    // Scale
     m_pDecl->SetVertexBuffer(m_pVB);
     m_pDecl->End();
 }

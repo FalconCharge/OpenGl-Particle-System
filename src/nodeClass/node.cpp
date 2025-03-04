@@ -1,6 +1,9 @@
 #include "node.h"
 
-Node::Node(){}
+Node::Node(){
+    //Default coloring scheme
+    this->SetColor(glm::vec4(1, 1, 1, 1));
+}
 Node::~Node(){}
 Node::Node(std::string name) : m_name(name){}
 
@@ -12,6 +15,7 @@ void Node::AddChild(Node* newChild){
 
     m_children.push_back(newChild);
 
+    //Default coloring
 
 }
 

@@ -8,12 +8,13 @@
 #include "affector.h"
 
 struct Point{
-    GLfloat x,y,z;       // Position Cords
+    GLfloat x,y,z,w;       // Position Cords
+    GLfloat rotation;
 };
 
-class Emitter{
+class Emitter : public Node{
     public:
-        const int NUM_OF_PARTICLES_IN_POOL = 2;
+        const int NUM_OF_PARTICLES_IN_POOL = 1000;
 
         Emitter();
         ~Emitter(){}
@@ -23,7 +24,11 @@ class Emitter{
         // Sets the current Node with a switch statments defaulting to continuous
         void SetMode(const std::string& p_sMode);
 
-
+        // For adjusting the color, size, rotations
+        void UpdateColor(glm::vec4 color){if(m_pMaterial) m_pMaterial->SetUniform("color", color);}
+        void UpdateSize(float size){if(m_pMaterial) m_pMaterial->SetUniform("size", size);}
+        void UpdateRotation(float rotation){if(m_pMaterial) m_pMaterial->SetUniform("Rotation", rotation);}
+        void UpdateTexture(wolf::Texture* texture){if(m_pMaterial) m_pMaterial->SetTexture("texture1", texture); m_pTexture = texture;}
 
         // Method Effect will call
         void Update(float p_fDelta);
@@ -42,12 +47,14 @@ class Emitter{
         void AddAffector(Affector* affector){m_affectors.push_back(affector);}
         // Make a remove affector soon Porbably make it by name or something
 
+        AABB& CalculateVolume();
+
     private:
         // Emitter mode: "CONTINUOUS" or "BURST".
         std::string m_sMode = "CONTINUOUS";
 
         // Variables for burst emission.
-        float m_birthRate = 1.0f;
+        float m_birthRate = 50.0f;
         float m_fBurstTime = 0.0f;
         float m_fBurstTimeMin = 0.0f;
         float m_fBurstTimeMax = 2.0f;
@@ -100,4 +107,6 @@ class Emitter{
         wolf::Texture* m_pTexture = nullptr;
 
         std::vector<Affector*> m_affectors;
+
+        AABB m_bounds;
 };

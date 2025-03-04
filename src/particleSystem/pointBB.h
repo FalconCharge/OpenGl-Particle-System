@@ -22,8 +22,8 @@ class PointBB : public Particle{
 
         // Setters
         void SetPosition(glm::vec3 position){m_position = position;}
-        void SetRotation(glm::vec3 rotation){m_rotation = rotation;}
-        void SetScale(glm::vec3 scale){m_scale = scale;}
+        void SetRotation(float rotation){m_rotation = rotation;}
+        void SetScale(float scale){m_scale = scale;}
         void SetSize(float size){m_size = size;}
         void SetVelocity(glm::vec3 velocity){m_velocity = velocity;}
         void SetIsExpired(bool expired){m_isExpired = expired;}
@@ -33,8 +33,8 @@ class PointBB : public Particle{
 
         // Getters
         glm::vec3 GetPosition(){return m_position;}
-        glm::vec3 GetScale(){return m_scale;}
-        glm::vec3 GetRotation(){return m_rotation;}
+        float GetScale(){return m_scale;}
+        float GetRotation(){return m_rotation;}
         glm::vec3 GetVelocity(){return m_velocity;}
         float GetSize(){return m_size;}
         bool IsExpired(){return m_isExpired;}
@@ -43,14 +43,14 @@ class PointBB : public Particle{
 
     private:
         glm::vec3 m_position;
-        glm::vec3 m_scale;
-        glm::vec3 m_rotation;
+        float m_scale = 500.0f;
+        float m_rotation;
         glm::vec3 m_velocity;
 
         float m_size = 20;
 
         float m_timeAlive = 0.0f;
-        float m_maxTimeAlive = 3.0f;
+        float m_maxTimeAlive = 5.0f;
 
         bool m_isExpired = false;
 

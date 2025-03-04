@@ -76,6 +76,8 @@ void ParticleDriver::BuildSmoke(){
 }
 void ParticleDriver::CreateEffect(){
     Effect* m_pEffect = new Effect();
+    m_pEffect->setWorldRotation(glm::vec3(45));
+    m_pEffect->setWorldScale(glm::vec3(5));
 
     //Create the emitter
     BoxEmitter* emitter = new BoxEmitter();
@@ -84,14 +86,21 @@ void ParticleDriver::CreateEffect(){
     emitter->AddAffector(forward);
 
     GravityAffector* graivty = new GravityAffector(4.81f);
-    emitter->AddAffector(graivty);
+    //emitter->AddAffector(graivty);
+
+    ScaleAffector* scale = new ScaleAffector(500);
+    emitter->AddAffector(scale);
+
+    RotateAffector* rotate = new RotateAffector(50);
+    emitter->AddAffector(rotate);
 
     m_pEffect->AddEmitter(emitter);
 
-    
+    m_pEffect->AddChild(emitter);
 
     m_pEffect->Init();  // Init all the emitters
     m_pEffect->Play();  // Start playing all emitters
+
 
     Scene::Instance().AddNode(m_pEffect);
 }

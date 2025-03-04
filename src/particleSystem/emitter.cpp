@@ -24,12 +24,19 @@ void Emitter::Init(){
     m_pMaterial->SetProgram("Data/Shader/glPoint.vsh", "Data/Shader/default.fsh");
 
     m_pTexture = wolf::TextureManager::CreateTexture("Data/textures/particles/smoke_01.png");
-    m_pMaterial->SetTexture("Smoke_1", m_pTexture);
+    m_pMaterial->SetTexture("texture1", m_pTexture);
+    m_pMaterial->SetUniform("color", this->getColor());
 
     m_pMaterial->SetUniform("size", 500);   // Sets the size of the Point should be moved into PointBB
+    m_pMaterial->SetUniform("size", 1500);   // Sets the size of the Point should be moved into PointBB
+
+
+    m_pMaterial->SetUniform("aRotation", 45);   // Just rotates the UVs so it's still a square
 
 
     // Static Materials (This should change)
+
+    SetVolume(CalculateVolume());
 
     std::cout << "Init Emitter" << std::endl;
 }
@@ -239,7 +246,15 @@ void Emitter::GetVertexData(std::vector<Point>& vertexData){
     while(currentParticle != nullptr){
         PointBB* point = static_cast<PointBB*>(currentParticle);
 
-        vertexData.push_back({point->GetPosition().x, point->GetPosition().y, point->GetPosition().z});
+        Point pointVertex;
+        pointVertex.x = point->GetPosition().x;
+        pointVertex.y = point->GetPosition().y;
+        pointVertex.z = point->GetPosition().z;
+        pointVertex.w = point->GetScale();
+
+        pointVertex.rotation = point->GetRotation();
+
+        vertexData.push_back(pointVertex);
 
         currentParticle = currentParticle->next;
 
@@ -255,4 +270,23 @@ void Emitter::ApplyAffectors(float p_fDelta){
         }
         current = current->next;
     }
+}
+AABB& Emitter::CalculateVolume() {
+    // Comments are all stolen from debug cube
+    // For now made is the BillBoard is Huge so we don't need to calculate and It will always be in the frustum
+    // Hopefully
+
+
+    /* ERROR IN GetWorldTransform somewhere but I gotta finish this assignment
+    // So I'm just going to work around it 
+    // Typically we would pass in the transform but instead we are going to make a new transform
+    // That has the correct values
+    */
+    //glm::mat4 transform = glm::mat4(1);
+    //transform = glm::translate(transform, this->GetWorldPosition()) * glm::scale(transform, this->GetWorldScale());
+    // Will transform to the center value so we want to set our trasnfor to that
+    //m_bounds = AABB(transform);
+
+    m_bounds = AABB(glm::vec3(0, 0, 0), 1000);
+    return m_bounds;
 }

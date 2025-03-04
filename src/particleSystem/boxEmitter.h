@@ -11,18 +11,22 @@ class BoxEmitter : public Emitter{
         void SetBoxSize(glm::vec3 size){m_size = size;}
         void SetRandomPosition(Particle* p) override{
             PointBB* point = static_cast<PointBB*>(p);
-
-            float x, y, z;
-            GeneratePosition(x, y, z);
-            point->SetPosition(glm::vec3(x, y, z));
+            
+            glm::vec3 pos = this->GetWorldPosition();
+            GeneratePosition(pos.x, pos.y, pos.z);
+            point->SetPosition(pos);
         }
 
     private:
         void GeneratePosition(float &x, float &y, float &z){
             // Generate random position inside the box
-            x = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.x;
-            y = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.y;
-            z = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.z;
+            float offsetX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.x;
+            float offsetY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.y;
+            float offsetZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * m_size.z;
+            
+            x += offsetX;
+            y += offsetY;
+            z += offsetZ;
         }
     
         glm::vec3 m_size = glm::vec3(1);

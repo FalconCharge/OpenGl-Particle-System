@@ -4,8 +4,8 @@
 #include <string>
 
 PointBB::PointBB() :    m_position(glm::vec3(0)),
-                        m_scale(glm::vec3(1)),
-                        m_rotation(glm::vec3(0)),
+                        m_scale(1),
+                        m_rotation(0),
                         m_velocity(glm::vec3(0))
 
 {
@@ -33,6 +33,8 @@ void PointBB::ResetPoint(){
     SetIsExpired(false);
     m_timeAlive = 0.0f;
     m_velocity = glm::vec3(0);
+    m_rotation = 0;
+    m_scale = 0;
     //std::cout << "reset values" << std::endl;
 }
 
