@@ -50,7 +50,7 @@ class PointBB : public Particle{
         float m_size = 20;
 
         float m_timeAlive = 0.0f;
-        float m_maxTimeAlive = 5.0f;
+        float m_maxTimeAlive = 30.0f;
 
         bool m_isExpired = false;
 

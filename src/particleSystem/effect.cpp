@@ -123,8 +123,8 @@ void Effect::SetupRendering(){
     m_pDecl = new wolf::VertexDeclaration();
 
     m_pDecl->Begin();
-    m_pDecl->AppendAttribute(wolf::AT_Position, 4, wolf::CT_Float);     // Pos attr
-    m_pDecl->AppendAttribute(wolf::AT_TexCoord1, 1, wolf::CT_Float);    // Scale
+    m_pDecl->AppendAttribute(wolf::AT_Position, 4, wolf::CT_Float);     // Pos attr + scale.w
+    m_pDecl->AppendAttribute(wolf::AT_Color, 1, wolf::CT_Float);    // Rotation attr
     m_pDecl->SetVertexBuffer(m_pVB);
     m_pDecl->End();
 }

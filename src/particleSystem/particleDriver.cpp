@@ -83,7 +83,7 @@ void ParticleDriver::CreateEffect(){
     BoxEmitter* emitter = new BoxEmitter();
 
     MoveForwardAffector* forward = new MoveForwardAffector(4);
-    emitter->AddAffector(forward);
+    //emitter->AddAffector(forward);
 
     GravityAffector* graivty = new GravityAffector(4.81f);
     //emitter->AddAffector(graivty);

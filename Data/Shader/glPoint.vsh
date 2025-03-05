@@ -3,7 +3,6 @@ uniform mat4 View;
 
 // Input attributes
 in vec4 aPos;      // w is scale
-in float aScale;
 in float aRotation;
 
 out float Rotation;
