@@ -91,7 +91,7 @@ void ParticleDriver::CreateEffect(){
     ScaleAffector* scale = new ScaleAffector(500);
     emitter->AddAffector(scale);
 
-    RotateAffector* rotate = new RotateAffector(50);
+    RotateAffector* rotate = new RotateAffector(2);
     emitter->AddAffector(rotate);
 
     m_pEffect->AddEmitter(emitter);

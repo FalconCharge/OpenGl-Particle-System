@@ -18,8 +18,13 @@ void Emitter::Init(){
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
-    m_pMaterial->SetDepthTest(true);
+    m_pMaterial->SetDepthTest(false);
     m_pMaterial->SetBlend(true);
+    m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_One);
+    m_pMaterial->SetBlendEquation(wolf::BE_Add);
+    
+
+
     //m_pMaterial->SetPoint(true); Enable the     glEnable(GL_PROGRAM_POINT_SIZE); currently set in driver
     m_pMaterial->SetProgram("Data/Shader/glPoint.vsh", "Data/Shader/default.fsh");
 
@@ -224,8 +229,6 @@ void Emitter::RemoveTail(){
         tail->prev = nullptr;
     }
 }
-
-
 
 
 
