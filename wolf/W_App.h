@@ -23,6 +23,7 @@ namespace wolf
         glm::vec2 getMousePos() const;
         void setMousePos(double x, double y) const; //Added Ben Nov/12
         void hideCursor() const;                    //Added Ben Nov.12
+        float getFPS() const;
         glm::vec2 getScreenSize() const;
         glm::vec2 getMouseScroll() const { return m_mouseScroll; }
         GLFWwindow* getWindow() const { return m_pWindow; }
@@ -41,6 +42,10 @@ namespace wolf
         GLFWwindow *m_pWindow = nullptr;
         std::string m_name;
         glm::vec2 m_mouseScroll;
+        float m_fps = 0.0f;
+        double m_lastFpsUpdateTime = 0.0;
+        int m_frameCount = 0;
+        float m_smoothedFps = 0.0f;
 
         static const int NUM_KEYS = GLFW_KEY_LAST - GLFW_KEY_SPACE;
         bool m_lastKeysDown[NUM_KEYS];

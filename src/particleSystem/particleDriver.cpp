@@ -16,6 +16,8 @@ ParticleDriver::ParticleDriver(const std::string& name) : wolf::App(name){
 void ParticleDriver::update(float p_fDelta){
     //Updates all the Nodes that were added to the scene instance
     Scene::Instance().Update(p_fDelta);
+
+    m_pFPSTextBox->setDisplayText(std::to_string(int(this->getFPS())));
 }
 ParticleDriver::~ParticleDriver(){
     delete m_pMainCamera;
@@ -23,13 +25,18 @@ ParticleDriver::~ParticleDriver(){
 void ParticleDriver::render(){
     // Renders all the Nodes that were added the the scene instance
     Scene::Instance().Render();
+
+    m_pFPSTextBox->render(m_width, m_height);
 }
 void ParticleDriver::Init(){
     glEnable(GL_PROGRAM_POINT_SIZE);
     
-    //Transparcy
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //Fps TextBox
+    m_pFPSTextBox = new TextBox("src/textRendering/Data/FontData/font.fnt", "FPS", 400, 500);
+    m_pFPSTextBox->setColor(glm::vec4(1, 1, 1, 1));
+    m_pFPSTextBox->SetPosition(glm::vec2(850, 700));
+    m_pFPSTextBox->SetHorizontalAlignment("AL_CENTER");
+    m_pFPSTextBox->Init();
 
     // Builds the tree for the scene
     //Scene::Instance().BuildOctTree(); Ben personally doesn't want to do this right now: Feb.24

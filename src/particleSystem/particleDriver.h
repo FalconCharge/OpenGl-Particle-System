@@ -21,6 +21,8 @@
 #include "scaleAffector.h"
 #include "rotateAffector.h"
 
+#include "../textRendering/src/TextBox.h"
+
 //Helper for the runner
 int RunParticleSystemDemo();
 
@@ -62,4 +64,5 @@ class ParticleDriver : public wolf::App {
         void BuildSmoke();
 
         Camera* m_pMainCamera;
+        TextBox* m_pFPSTextBox;
 };

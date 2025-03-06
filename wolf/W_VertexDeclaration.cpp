@@ -8,6 +8,7 @@
 #include "W_VertexBuffer.h"
 #include "W_IndexBuffer.h"
 #include "W_Types.h"
+#include <iostream>
 
 namespace wolf
 {
@@ -151,6 +152,10 @@ void VertexDeclaration::AppendAttribute(wolf::Attribute p_attr, int p_iNumCompon
 void VertexDeclaration::Bind()
 {
     glBindVertexArray(m_vao);
+	if(m_pVB == nullptr){
+		std::cout << "[ERROR] the vertex buffer isn't here!" << std::endl;
+		return;
+	}
     m_pVB->Bind();
     if( m_pIB )
         m_pIB->Bind();

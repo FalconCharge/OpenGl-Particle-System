@@ -11,10 +11,10 @@ void AABB::Render(glm::mat4& mView, glm::mat4& mProj) const{
 
     m_pProgram->SetUniform("color", glm::vec4(m_vColor, 1));
 
-    m_pDecl->Bind();
+    //m_pDecl->Bind();
 
-    // Draw!
-    glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_SHORT, nullptr);
+    // Draw!    [Error] not sure what's wrong here
+    //glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_SHORT, nullptr);
 
 }
 

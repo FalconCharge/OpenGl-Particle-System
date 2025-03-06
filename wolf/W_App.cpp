@@ -138,6 +138,17 @@ void App::run()
         float elapsedTime = (float)(currTime - lastTime);
         lastTime = currTime;
 
+        // FPS Calculation
+        m_frameCount++;
+        if (currTime - m_lastFpsUpdateTime >= 1.0) // Update every 1 second
+        {
+            m_smoothedFps = m_frameCount / (currTime - m_lastFpsUpdateTime);
+            m_frameCount = 0;
+            m_lastFpsUpdateTime = currTime;
+            
+            m_fps = m_smoothedFps;
+        }
+
         glfwGetFramebufferSize(m_pWindow, &m_width, &m_height);
         if(m_width != 0 && m_height != 0)
         {
@@ -197,6 +208,9 @@ void App::setMousePos(double x, double y) const{
 //Author Ben Harper Nov.12
 void App::hideCursor() const{
     glfwSetInputMode(getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+float App::getFPS() const{
+    return m_fps;
 }
 glm::vec2 App::getScreenSize() const
 {

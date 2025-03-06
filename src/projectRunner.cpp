@@ -72,23 +72,6 @@ void ProjectRunner::BuildBasicEnviroment(){
     pBB1->Init();
 
     Scene::Instance().AddNode(pBB1);
-    // NO longer works since I stop deriveing from node
-    /*
-    //Building Point pixels
-    PointBB *pPBB1 = new PointBB(glm::vec3(2), glm::vec3(1), glm::vec3(0.0));
 
-    pPBB1->SetName("BB with points");
-
-    //Don't need to bother with the shader
-
-    pPBB1->SetColor(glm::vec4(0, 0, 0, 1)); // White
-    pPBB1->SetTexture("Data/textures/particles/smoke_01.png");
-
-    pPBB1->SetShader("Data/Shader/glPoint.vsh", "Data/Shader/glPoint.fsh");
-
-    pPBB1->Init();
-
-    Scene::Instance().AddNode(pPBB1);
-    */
 }
 

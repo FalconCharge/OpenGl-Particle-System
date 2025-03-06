@@ -22,7 +22,7 @@ DebugCube::~DebugCube(){
 void DebugCube::Init(){
     SetDirty(true);
     //std::cout << "Initlizing: " << GetName() << std::endl;
-    //renderBB();
+    renderBB();
     if(m_pProgram == nullptr){
         m_pProgram = wolf::ProgramManager::CreateProgram("Data/Shader/DebugCube.vsh", "Data/Shader/DebugCube.fsh");
     }
@@ -151,8 +151,6 @@ void DebugCube::Render(glm::mat4 proj, glm::mat4 view){
     m_pDecl->Bind();
 
     glDrawElements(GL_TRIANGLES, cubeIndices.size(), GL_UNSIGNED_SHORT, nullptr);
-    
-
 
     if(m_renderBB){
         GetVolume().Render(view, proj);
