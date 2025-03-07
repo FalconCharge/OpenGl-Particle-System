@@ -11,6 +11,7 @@
 #include "pointBB.h"
 #include "effect.h"
 #include "boxEmitter.h"
+#include "../tinyxml/tinyxml.h"
 
 #include "circleShapeParticle.h"
 
@@ -62,6 +63,10 @@ class ParticleDriver : public wolf::App {
         void CreateEffect();
         // Builds a Smoke Object
         void BuildSmoke();
+        // Creats an Effect from file
+        Effect* CreateEffectFromFile(const std::string& filename);
+
+        glm::vec3 ParseVec3(std::string str);
 
         Camera* m_pMainCamera;
         TextBox* m_pFPSTextBox;

@@ -1,0 +1,6 @@
+<effect name="explosion" position="0,0,0" shape="box" scale="1,1,1" rotation="0,0,0">
+    <emitter file="sparks.emitter" offset="0,0,1"/>
+    <emitter file="debris.emitter" offset="2,0,2"/>
+    <emitter file="fire.emitter" offset="2,0,0"/>
+    <emitter file="smoke.emitter" offset="5,0,5"/>
+</effect>
