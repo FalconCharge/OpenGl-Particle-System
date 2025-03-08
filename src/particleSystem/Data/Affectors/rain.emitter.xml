@@ -1,0 +1,4 @@
+<emitter name="rain" num_particles="1000" duration="10.0" type="continuous" birthrate="100">
+    <affector type="direction" direction="0,-1,0" speed="5.0"/> <!-- Moves particles downward -->
+    <affector type="direction" direction="1,0,0" speed="0.5"/> <!-- Adds slight horizontal movement -->
+</emitter>

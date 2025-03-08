@@ -15,6 +15,7 @@ class Scene{
 
         // Add a top level node to the scene
         void AddNode(Node* node);
+        void RemoveNode(Node* node);
 
         void Update(float fDelta);
         void Render();

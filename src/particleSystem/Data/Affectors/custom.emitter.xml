@@ -1,0 +1,16 @@
+<emitter name="custom" num_particles="1000000" duration="-1" type="continuous" birthrate="100">
+    <affector type="scale">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="1000"/>
+        <property name="end" value="3000"/>
+    </affector>
+    <affector type="color">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="1, 0, 0, 1"/>
+        <property name="end" value="0, 1, 0, 1"/>
+    </affector>
+    <affector type="gravity">
+        <property name="strength" value="9.81"/>
+    </affector>
+
+</emitter>

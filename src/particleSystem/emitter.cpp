@@ -121,7 +121,7 @@ void Emitter::RecycleParticle(Particle* p) {
     AddToFree(p);
 }
 
-void Emitter::SetMode(const std::string& p_sMode) {
+void Emitter::SetMode(std::string p_sMode) {
     if (p_sMode == "CONTINUOUS" || p_sMode == "BURST") {
         m_sMode = p_sMode;
     } else {

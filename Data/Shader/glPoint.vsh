@@ -3,9 +3,11 @@ uniform mat4 View;
 
 // Input attributes
 in vec4 aPos;      // w is scale
+in vec4 aColor;
 in float aRotation;
 
 out float Rotation;
+out vec4 Color;
 
 void main()
 {
@@ -16,4 +18,5 @@ void main()
     gl_PointSize = (1.0 - pos.z / pos.w) * aPos.w;
 
     Rotation = aRotation;
+    Color = aColor;
 }

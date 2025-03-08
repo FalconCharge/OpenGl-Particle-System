@@ -24,6 +24,9 @@
 
 #include "../textRendering/src/TextBox.h"
 
+#include "particleSystemFactory.h"
+#include "../utility/Unility.h"
+
 //Helper for the runner
 int RunParticleSystemDemo();
 
@@ -57,6 +60,16 @@ class ParticleDriver : public wolf::App {
 
 
     private:
+        // Load an effect from file
+        void LoadEffect(const std::string& filename);
+
+        // Create an effect from file
+        Effect* CreateEffectFromFile(const std::string& filename);
+        // Load an emitter from file
+        void LoadEmitterFromFile(const std::string& emitterFile, Emitter* emitter);
+        // Reload the particle system
+        void ReloadParticleSystem();
+
         // Starts the build for the demo enviroment
         void BuildDemoEnviroment();
         // Create an emitter
@@ -64,10 +77,12 @@ class ParticleDriver : public wolf::App {
         // Builds a Smoke Object
         void BuildSmoke();
         // Creats an Effect from file
-        Effect* CreateEffectFromFile(const std::string& filename);
 
-        glm::vec3 ParseVec3(std::string str);
+        Camera* m_pMainCamera = nullptr;
+        TextBox* m_pFPSTextBox = nullptr;
+        // Current Effect Should Prob change this to spawn several in
+        Effect* m_pEffect = nullptr;
 
-        Camera* m_pMainCamera;
-        TextBox* m_pFPSTextBox;
+        // Map to store emitters by their file paths
+        std::unordered_map<std::string, Emitter*> m_emitters;
 };

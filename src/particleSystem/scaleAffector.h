@@ -1,25 +1,29 @@
 #pragma once
 #include "affector.h"
 
-// Would be nice to add accerlation into this
+#include <string>
+
 
 class ScaleAffector : public Affector{
     public:
-        ScaleAffector(const float scaleFactor) : m_scale(scaleFactor) {}
+        ScaleAffector(float startScale, float endScale, std::string mode) : m_StartScale(startScale), m_EndScale(endScale), m_Mode(mode) {}
 
         ~ScaleAffector() {}
 
-
         void Apply(Particle* particle, float p_fDeltaTime){
             PointBB* point = static_cast<PointBB*>(particle);
-
-            float scale = point->GetScale();
-            scale += m_scale * p_fDeltaTime;
-
-            point->SetScale(scale);
+            if(m_Mode == "OverLife"){
+                float t = point->GetTimeAlive() / point->GetMaxTimeAlive();
+                point->SetScale(glm::mix(m_StartScale, m_EndScale, t));
+            }
+            else if (m_Mode == "Instant") {
+                point->SetScale(m_EndScale);
+            }
         }
 
     private:
-        float m_scale;
+        float m_StartScale;
+        float m_EndScale;
+        std::string m_Mode;
 
 };

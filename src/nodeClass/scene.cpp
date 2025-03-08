@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <set>
+#include "../particleSystem/effect.h"
 
 // Returns the singleton instance of Scene.
 Scene& Scene::Instance() {
@@ -26,6 +27,14 @@ void Scene::RenderCubes(){
 // Adds a top-level node to the scene.
 void Scene::AddNode(Node* node) {
     m_nodes.push_back(node);
+    
+}
+// Removes a Node from the scene
+void Scene::RemoveNode(Node* node) {
+    auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
+    if (it != m_nodes.end()) {
+        m_nodes.erase(it);
+    }
 }
 
 // Returns the list of top-level nodes.
@@ -73,7 +82,6 @@ void Scene::Render(){
     
     //Should these be moved to init?
     glEnable(GL_CULL_FACE); //Culls the faces on the inside of nodes
-    //glEnable(GL_DEPTH_TEST);    // Enables depth testing Makes it so we can't see through objects
 
 
     glm::mat4 proj = GetActiveCamera()->getProjMatrix();
@@ -90,7 +98,6 @@ void Scene::Render(){
             }
         }
     }else{
-        // Renders everything that was added as a node used to be m_objectToRener
         for(Node* node : m_nodes){
             node->Render(proj, view);
         }

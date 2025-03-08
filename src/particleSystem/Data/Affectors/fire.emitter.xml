@@ -1,0 +1,4 @@
+<emitter name="fire" num_particles="150" duration="3.0" type="continuous" birthrate="50">
+    <affector type="direction" direction="0,1,0" speed="2.0"/> <!-- Moves particles upward -->
+    <affector type="rotate" value="5.0"/> <!-- Adds random rotation -->
+</emitter>

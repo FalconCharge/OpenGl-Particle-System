@@ -1,0 +1,4 @@
+<emitter name="snow" num_particles="500" duration="15.0" type="continuous" birthrate="20">
+    <affector type="direction" direction="0,-1,0" speed="1.0"/> <!-- Moves particles downward slowly -->
+    <affector type="rotate" value="2.0"/> <!-- Adds slight rotation -->
+</emitter>

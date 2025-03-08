@@ -21,8 +21,6 @@ class Emitter : public Node{
 
         // Creates a Pool of Particles which the Emitter will use
         void Init();
-        // Sets the current Node with a switch statments defaulting to continuous
-        void SetMode(const std::string& p_sMode);
 
         // For adjusting the color, size, rotations
         void UpdateColor(glm::vec4 color){if(m_pMaterial) m_pMaterial->SetUniform("color", color);}
@@ -49,9 +47,18 @@ class Emitter : public Node{
 
         AABB& CalculateVolume();
 
+        void SetNumParticles(int numParticles){m_iParticles = numParticles;}
+        void SetMode(std::string mode);
+        void SetDuration(float duration){m_fMaxTimeAlive = duration;}
+        void SetBirthRate(float birthRate){m_birthRate = birthRate;}
+
     private:
-        // Emitter mode: "CONTINUOUS" or "BURST".
-        std::string m_sMode = "CONTINUOUS";
+        int m_iParticles = 1000;                    // Amount of Particles in the Pool
+        std::string m_sMode = "CONTINUOUS";        // Emitter mode: "CONTINUOUS" or "BURST".
+        float m_fTimeAlive = 0.0f;
+        float m_fMaxTimeAlive = 20.0f;
+
+
 
         // Variables for burst emission.
         float m_birthRate = 50.0f;
@@ -59,9 +66,6 @@ class Emitter : public Node{
         float m_fBurstTimeMin = 0.0f;
         float m_fBurstTimeMax = 2.0f;
         bool m_bRandomBurstRate = false;
-
-        // Duration the emitter has been active.
-        float m_fDuration = 0.0f;
 
         // Accumulator for particle spawning.
         float m_toSpawn_accumulator = 0.0f;

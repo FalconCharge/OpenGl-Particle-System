@@ -122,6 +122,13 @@ void DebugCube::Render(glm::mat4 proj, glm::mat4 view){
     // Typically we would pass in the transform but instead we are going to make a new transform
     // That has the correct values
     */
+
+    glEnable(GL_DEPTH_TEST);
+    //glDisable(GL_BLEND);
+    //glDepthMask(GL_TRUE);  // Enable depth writing
+    //glEnable(GL_DEPTH_TEST);
+
+
     
     glm::mat4 world = glm::mat4(1);
     world = glm::translate(world, this->GetWorldPosition()) * glm::scale(world, this->GetWorldScale());
@@ -155,6 +162,9 @@ void DebugCube::Render(glm::mat4 proj, glm::mat4 view){
     if(m_renderBB){
         GetVolume().Render(view, proj);
     }
+
+        glEnable(GL_DEPTH_TEST);
+
 
 }
 void DebugCube::Update(float fDelta){
