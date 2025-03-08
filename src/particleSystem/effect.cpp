@@ -5,16 +5,35 @@
 #include <ctime>    // For time()
 
 Effect::Effect(){
-    // Creates an effect with certain paramets I think
+    
     SetVolume(CalculateVolume());
-    //glEnable(GL_DYNAMIC_DRAW); // Use when flushing the VB
+
     SetWorldPosition(glm::vec3(0));
 
     SetupRendering();
 }
-Effect::~Effect(){
-    //Cleans out all the emitters
+Effect::~Effect() {
+    // Clean up all emitters
+    for (Emitter* e : m_pEmitters) {
+        if (e) {
+            delete e;
+        }
+    }
     m_pEmitters.clear();
+
+    // Clean up the vertex buffer
+    if (m_pVB) {
+        wolf::BufferManager::DestroyBuffer(m_pVB);
+        m_pVB = nullptr;
+    }
+
+    // Clean up the vertex declaration
+    if (m_pDecl) {
+        delete m_pDecl;
+        m_pDecl = nullptr;
+    }
+
+    std::cout << "Effect Destoryed." << std::endl;
 }
 
 // Runs the the Emitters and Calls Update
@@ -45,6 +64,8 @@ void Effect::Pause(){
 }
 void Effect::AddEmitter(Emitter* e){
     m_pEmitters.push_back(e);
+    this->AddChild(e);
+
 }
 AABB& Effect::CalculateVolume() {
     // Comments are all stolen from debug cube
@@ -107,24 +128,39 @@ void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& ver
         return;
     }
 
-    m_pVB->Write(vertices.data(), vertices.size() * sizeof(Point));
+    // Print vertex data before writing to the buffer
+    /*
+    std::cout << "[Vertex Data] Begin\n";
+    for (const Point& vertex : vertices) {
+        std::cout << "Position: (" << vertex.x << ", " << vertex.y << ", " << vertex.z << "), "
+                  << "Size: " << vertex.w << ", "
+                  << "Color: (" << vertex.r << ", " << vertex.g << ", " << vertex.b << "), "
+                  << "Alpha: " << vertex.a << ", "
+                  << "Rotation: " << vertex.rotation << std::endl;
+    }
+    std::cout << "[Vertex Data] End\n";*/
+
+    // Write the vertex data to the vertex buffer
+    m_pVB->Update(vertices.data(), vertices.size() * sizeof(Point));
 
     currMaterial->Apply();
 
     m_pDecl->Bind();
 
     glDrawArrays(GL_POINTS, 0, vertices.size());
-
 }
+
 void Effect::SetupRendering(){
-    // Shader Is set in Emitters
-    m_pVB = wolf::BufferManager::CreateVertexBuffer(100000);    // Max size 100k?
+    // Sets up the VB which will collect all the points data
+    m_pVB = wolf::BufferManager::CreateVertexBuffer(1000000);    // Max size 100k?
 
     m_pDecl = new wolf::VertexDeclaration();
 
     m_pDecl->Begin();
     m_pDecl->AppendAttribute(wolf::AT_Position, 4, wolf::CT_Float);     // Pos attr + scale.w
-    m_pDecl->AppendAttribute(wolf::AT_Color, 1, wolf::CT_Float);    // Rotation attr
+    m_pDecl->AppendAttribute(wolf::AT_Color, 4, wolf::CT_Float);    // Rotation attr
+    m_pDecl->AppendAttribute(wolf::AT_TexCoord1, 1, wolf::CT_Float);    // Rotation attr
+
     m_pDecl->SetVertexBuffer(m_pVB);
     m_pDecl->End();
 }

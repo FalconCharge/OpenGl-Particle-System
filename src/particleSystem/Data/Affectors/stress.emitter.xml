@@ -1,0 +1,36 @@
+<emitter name="stress" num_particles="100000" duration="-1" type="BURST" birthrate="1000" burst_count="16000" burst_interval="5">
+
+    <spawn_property name="velocity" type="random" min="0,0,0" max="0,0,0"/>
+
+    <spawn_property name="color" type="random" min="0,0,0" max="1,1,1"/>
+
+    <spawn_property name="size" type="random" min="100" max="1000"/>
+
+    <spawn_property name="lifeTime" type="random" min="5" max="5"/>
+
+    <!-- Fade Affector -->
+    <affector type="fade">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="1"/>   <!-- Fully opaque at start -->
+        <property name="mid" value="0.90"/>   <!-- Partially transparent in the middle -->
+        <property name="end" value="0"/>     <!-- Fully transparent at the end -->
+    </affector>
+
+    <!-- Scale Affector -->
+    <affector type="scale">
+        <property name="mode" value="Breath"/>
+        <property name="start" value="500"/>   <!-- Fully opaque at start -->
+        <property name="end" value="3000"/>     <!-- Fully transparent at the end -->
+    </affector>
+
+        <!-- Color Affector -->
+    <affector type="color">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="0.0, 0.0, 0.0"/> <!-- Dark gray for smoke at birth -->
+        <property name="end" value="1.0, 1.0, 1.0"/> <!-- Fades to white -->
+    </affector>
+
+    <affector type="turbulence">
+        <property name="strength" value="20"/> <!-- Random movement -->
+    </affector>
+</emitter>

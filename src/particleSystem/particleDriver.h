@@ -1,27 +1,30 @@
+//-----------------------------------------------------------------------------
+// File:            particleDriver.h
+// Original Author: Ben Harper
+// Date:            March.8/2025
+//
+// Description:
+// ParticleDriver is the main application class for the particle system demo. 
+// It handles initialization, rendering, and updating of the particle system, 
+// along with managing the scene, camera, and UI elements.
+//
+//-----------------------------------------------------------------------------  
+
+
+
 #pragma once
 
 #include "../../wolf/wolf.h"
-#include <string>
 
 #include "../nodeClass/scene.h"    //A singleton which stores the instance of the scene
 
-#include "../nodeClass/node.h"
-#include "../nodeClass/debugCube.h"
-#include "billBoard.h"
-#include "pointBB.h"
-#include "effect.h"
-#include "boxEmitter.h"
-
-#include "circleShapeParticle.h"
-
-//Affectors
-#include "movementAffectors.h"
-#include "gravityAffector.h"
-#include "lifeTimeAffector.h"
-#include "scaleAffector.h"
-#include "rotateAffector.h"
-
+#include "../nodeClass/debugCube.h"     // Ground
 #include "../textRendering/src/TextBox.h"
+#include "effect.h"
+#include "particleSystemFactory.h"
+
+#include <string>
+
 
 //Helper for the runner
 int RunParticleSystemDemo();
@@ -51,18 +54,34 @@ class ParticleDriver : public wolf::App {
         // Renders all the Nodes within the Scene Instance
         // This method overrides from a call in wolf which is called each frame
         */
-        void render() override;
+        void render();
 
 
 
     private:
-        // Starts the build for the demo enviroment
-        void BuildDemoEnviroment();
-        // Create an emitter
-        void CreateEffect();
-        // Builds a Smoke Object
-        void BuildSmoke();
+        // Loads an effect from a certain file
+        void LoadEffect(const std::string& filename);
 
-        Camera* m_pMainCamera;
-        TextBox* m_pFPSTextBox;
+        void ReloadParticleSystem();
+
+        void BuildDemoEnviroment();
+
+        void SetupCamera();
+
+        void SetUpTextBox();
+
+        void UpdateEffect();
+
+
+
+
+        Camera* m_pMainCamera = nullptr;
+        TextBox* m_pFPSTextBox = nullptr;
+        // Current Effect Should Prob change this to spawn several in
+        Effect* m_pEffect = nullptr;
+
+        std::vector<std::string> m_effectFileNames;
+
+        int m_index = 0;
+
 };

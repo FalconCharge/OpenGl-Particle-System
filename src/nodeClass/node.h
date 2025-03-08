@@ -25,6 +25,7 @@ class Node{
 
         // Adds a child to the node
         void AddChild(Node* newChild);
+        void RemoveChild(Node* child);
 
         // Setters      
         void SetName(const std::string newName){m_name = newName;}                              

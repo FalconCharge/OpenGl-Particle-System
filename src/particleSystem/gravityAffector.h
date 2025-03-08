@@ -5,7 +5,7 @@
 
 class GravityAffector : public Affector{
     public:
-        GravityAffector(const float gravity) : m_gravity(gravity) {}
+        GravityAffector(const float strenght) : m_gravity(strenght) {}
 
         ~GravityAffector() {}
 
@@ -14,13 +14,7 @@ class GravityAffector : public Affector{
             PointBB* point = static_cast<PointBB*>(particle);
 
             glm::vec3 velocity = point->GetVelocity();
-            velocity.y += m_gravity * p_fDeltaTime;
-
-            glm::vec3 pos = point->GetPosition();
-
-            pos -= velocity * p_fDeltaTime;
-
-            point->SetPosition(pos);
+            velocity.y -= m_gravity * p_fDeltaTime;
             point->SetVelocity(velocity);
 
         }

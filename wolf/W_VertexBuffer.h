@@ -22,6 +22,9 @@ class VertexBuffer : public Buffer
 		//-------------------------------------------------------------------------
 		virtual void Bind();
 		virtual void Write(const void* p_pData, int p_iLength = -1);
+		virtual void Update(const void* p_pData, int p_iLength = -1);
+
+
 		//-------------------------------------------------------------------------
 
 	private:

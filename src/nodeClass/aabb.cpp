@@ -130,10 +130,10 @@ AABB::AABB(glm::mat4& inTransform) {
     SetupRendering();
 }
 AABB::~AABB(){
-    delete m_pDecl;
-    wolf::BufferManager::DestroyBuffer(m_pIB);
-    wolf::BufferManager::DestroyBuffer(m_pVB);
-    wolf::ProgramManager::DestroyProgram(m_pProgram);
+    //delete m_pDecl;
+    //wolf::BufferManager::DestroyBuffer(m_pIB);
+    //wolf::BufferManager::DestroyBuffer(m_pVB);
+    //wolf::ProgramManager::DestroyProgram(m_pProgram);
 }
 
 

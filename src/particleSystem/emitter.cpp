@@ -1,49 +1,69 @@
 #include "emitter.h"
 #include "affector.h"
+#include "../utility/Unility.h"
 
 #include <random>
 Emitter::Emitter(){
     
 }
+Emitter::~Emitter() {
+    m_particlePool.clear();
+    m_pActiveList = nullptr;
+    m_pFreeList = nullptr;
+
+
+    // Clean up the material and texture
+    if (m_pMaterial) {
+        wolf::MaterialManager::DestroyMaterial(m_pMaterial);
+        m_pMaterial = nullptr;
+    }
+
+    if (m_pTexture) {
+        wolf::TextureManager::DestroyTexture(m_pTexture);
+        m_pTexture = nullptr;
+    }
+
+    // Clean up affectors (if dynamically allocated)
+    for (auto affector : m_affectors) {
+        delete affector;
+    }
+    m_affectors.clear();
+}
 
 void Emitter::Init(){
-    
-    PointBB* pParticles = new PointBB[NUM_OF_PARTICLES_IN_POOL];
-    for(int i = 0; i < NUM_OF_PARTICLES_IN_POOL; i++){
-        this->AddToPool(&pParticles[i]);
+    // A vector which holds all the particles in memory
+    m_particlePool.resize(m_iParticles);
+
+    // Add all the particles to the free list
+    for(PointBB& particle : m_particlePool){
+        AddToPool(&particle);
     }
+    /* Previous method Couldn't delete particles in memory some reason (This method sucks)
+    PointBB* pParticles = new PointBB[m_iParticles];
+    for(int i = 0; i < m_iParticles; i++){
+        this->AddToPool(&pParticles[i]);
+    }*/
 
 
     // Create the Material for the emitter
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
-    m_pMaterial->SetDepthTest(false);
-    m_pMaterial->SetBlend(true);
-    m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_One);
-    m_pMaterial->SetBlendEquation(wolf::BE_Add);
-    
-
-
-    //m_pMaterial->SetPoint(true); Enable the     glEnable(GL_PROGRAM_POINT_SIZE); currently set in driver
+    m_pMaterial->SetDepthTest(false);  // Disabling depth testing for transparency
+    m_pMaterial->SetBlend(true);       // Enable blending
+    m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_OneMinusSrcAlpha); // Standard transparency blend mode
+    m_pMaterial->SetBlendEquation(wolf::BE_Add); // Additive blending
     m_pMaterial->SetProgram("Data/Shader/glPoint.vsh", "Data/Shader/default.fsh");
 
     m_pTexture = wolf::TextureManager::CreateTexture("Data/textures/particles/smoke_01.png");
     m_pMaterial->SetTexture("texture1", m_pTexture);
-    m_pMaterial->SetUniform("color", this->getColor());
-
-    m_pMaterial->SetUniform("size", 500);   // Sets the size of the Point should be moved into PointBB
-    m_pMaterial->SetUniform("size", 1500);   // Sets the size of the Point should be moved into PointBB
-
-
-    m_pMaterial->SetUniform("aRotation", 45);   // Just rotates the UVs so it's still a square
 
 
     // Static Materials (This should change)
 
     SetVolume(CalculateVolume());
 
-    std::cout << "Init Emitter" << std::endl;
+    //std::cout << "Init Emitter" << std::endl;
 }
 void Emitter::AddToPool(Particle* p) {
     p->prev = nullptr;                    // Set the previous pointer of the particle to nullptr (indicating it's at the start of the list)
@@ -74,6 +94,7 @@ void Emitter::SpawnParticle(){
     // If not free Particle, Kill one from the active list
     if(!p){
         if(m_pActiveList){
+            // Getting the oldest particle
             Particle* tail = m_pActiveList;
             while(tail->next){
                 tail = tail->next;
@@ -82,12 +103,15 @@ void Emitter::SpawnParticle(){
             RecycleParticle(tail);
             // Get the free Particle now
             p = GetFreeParticle();
-            std::cout << "Got free particle through recycling" << std::endl;
+            //std::cout << "Got free particle through recycling" << std::endl;
         }
     }
 
     if(p){
         // Get random positions to spawn the Point at
+        for(SpawnProperties* spawnProp : m_SpawnProperties){
+            ApplySpawnProperties(static_cast<PointBB*>(p), spawnProp);
+        }
         SetRandomPosition(p);
         AddToActive(p);
     }else{
@@ -121,7 +145,7 @@ void Emitter::RecycleParticle(Particle* p) {
     AddToFree(p);
 }
 
-void Emitter::SetMode(const std::string& p_sMode) {
+void Emitter::SetMode(std::string p_sMode) {
     if (p_sMode == "CONTINUOUS" || p_sMode == "BURST") {
         m_sMode = p_sMode;
     } else {
@@ -131,6 +155,8 @@ void Emitter::SetMode(const std::string& p_sMode) {
 void Emitter::Update(float p_fDelta){
     // Update active particles
     Particle* currentParticle = m_pActiveList;
+    std::vector<PointBB*> activeParticles;  // A list of active particles which will store in order based on cam distance
+
 
     while (currentParticle != 0) {
         Particle* nextParticle = currentParticle->next;
@@ -138,18 +164,31 @@ void Emitter::Update(float p_fDelta){
         PointBB* point = static_cast<PointBB*>(currentParticle);
         // Update particle
         point->Update(p_fDelta);
+        for(auto& affector : m_affectors){
+            affector->Apply(point, p_fDelta);
+        }
+        point->SetCameraDistance(glm::length(point->GetPosition() - Scene::Instance().GetActiveCamera()->getViewPosition()));
 
         // If expired, remove it from active and add to free list
         if (point->IsExpired()) {
             ParticleKilled(currentParticle);
+        }else{
+            activeParticles.push_back(point);
         }
+
 
         currentParticle = nextParticle;
 
     }
 
+    // Sort particles by distance after collecting
+    SortParticlesByDistance(activeParticles);
     
-
+    // Optionally, put the particles back in the linked list (if needed)
+    m_pActiveList = nullptr;
+    for (PointBB* particle : activeParticles) {
+        AddToActive(particle);
+    }
 
     if(m_sMode == "CONTINUOUS"){
         float birth_Rate = 0;
@@ -174,8 +213,15 @@ void Emitter::Update(float p_fDelta){
             SpawnParticle();
         }
         
+    }else if("BURST"){
+        m_burstTime += p_fDelta;
+        if(m_burstTime >= m_burstInterval){
+            for(int i = 0; i < m_burstCount; i++){
+                SpawnParticle();
+            }
+            m_burstTime = 0.0f;
+        }
     }
-    ApplyAffectors(p_fDelta);
 }
 
 void Emitter::Play() {
@@ -253,25 +299,50 @@ void Emitter::GetVertexData(std::vector<Point>& vertexData){
         pointVertex.x = point->GetPosition().x;
         pointVertex.y = point->GetPosition().y;
         pointVertex.z = point->GetPosition().z;
-        pointVertex.w = point->GetScale();
+        pointVertex.w = point->GetSize();
+
+        pointVertex.r = point->GetColor().r;
+        pointVertex.g = point->GetColor().g;
+        pointVertex.b = point->GetColor().b;
+        pointVertex.a = point->GetFade();
 
         pointVertex.rotation = point->GetRotation();
 
         vertexData.push_back(pointVertex);
 
         currentParticle = currentParticle->next;
-
     }
-    vertexData.insert(vertexData.end(), m_vertexData.begin(), m_vertexData.end());
 }
-void Emitter::ApplyAffectors(float p_fDelta){
-    Particle* current = m_pActiveList;
-    while(current){
-        PointBB* point = static_cast<PointBB*>(current);
-        for(auto& affector : m_affectors){
-            affector->Apply(point, p_fDelta);
+
+void Emitter::ApplySpawnProperties(PointBB* particle, const SpawnProperties* props) {
+    if (props->name == "velocity") {
+        if (props->type == "random") {
+            particle->SetVelocity(RandomVec3(props->minVec3, props->maxVec3));
+        } else if (props->type == "constant") {
+            particle->SetVelocity(props->constVec3);
         }
-        current = current->next;
+    } else if (props->name == "color") {
+        if (props->type == "random") {
+            particle->SetColor(RandomVec3(props->minVec3, props->maxVec3));
+        } else if (props->type == "constant") {
+            particle->SetColor(props->constVec3);
+        }
+    } else if (props->name == "size") {
+        if (props->type == "random") {
+            particle->SetSize(RandomFloat(props->minFloat, props->maxFloat));
+        } else if (props->type == "constant") {
+            particle->SetSize(props->constFloat);
+        }
+    } else if (props->name == "rotation") {
+        if (props->type == "constant") {
+            particle->SetRotation(props->constFloat);
+        }
+    } else if (props->name == "lifeTime") {
+        if(props->type == "random"){
+            particle->SetMaxTimeAlive(RandomFloat(props->minFloat, props->maxFloat));
+        }else if(props->type == "constant"){
+            particle->SetMaxTimeAlive(props->constFloat);
+        }
     }
 }
 AABB& Emitter::CalculateVolume() {
@@ -293,3 +364,11 @@ AABB& Emitter::CalculateVolume() {
     m_bounds = AABB(glm::vec3(0, 0, 0), 1000);
     return m_bounds;
 }
+
+void Emitter::SortParticlesByDistance(std::vector<PointBB*>& particles) {
+    // Sort particles from farthest to closest to the camera
+    std::sort(particles.begin(), particles.end(), [](PointBB* a, PointBB* b) {
+        return a->GetCameraDistance() < b->GetCameraDistance();  
+    });
+}
+

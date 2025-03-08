@@ -1,6 +1,26 @@
 #pragma once
 #include "affector.h"
 
+// Moves particles in a vector direction
+class DirectionalMoveAffector : public Affector{
+    public:
+        DirectionalMoveAffector(const glm::vec3& direction, float speed) : m_direction(glm::normalize(direction)), m_speed(speed) {}
+        
+        ~DirectionalMoveAffector() override = default;
+
+
+        void Apply(Particle* particle, float deltaTime) override {
+            PointBB* point = static_cast<PointBB*>(particle);
+            glm::vec3 pos = point->GetPosition();
+            pos += m_direction * m_speed * deltaTime;
+            point->SetPosition(pos);
+        }
+
+    private:
+        glm::vec3 m_direction;
+        float m_speed;
+};
+
 // Moves particles to the left (negative x direction)
 class MoveLeftAffector : public Affector {
 public:

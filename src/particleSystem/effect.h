@@ -17,23 +17,30 @@ class Effect : public Node{
         void Init();
         void Update(float p_fDelta) override;
         void Render(glm::mat4 p_view, glm::mat4 p_Proj) override;
+
+        // Not implemented
         void Play();
         void Stop();
         void Pause();
+        // Not implemented
 
+        // Needed for a Noode (Just makes a huge node so it always renders)
         AABB& CalculateVolume();
+        // Adds an emitter this effect
         void AddEmitter(Emitter* e);
 
     private:
+        // A list of the effects emitters
         std::vector<Emitter*> m_pEmitters;
+        
         AABB m_bounds;
 
 
         // For Rendering
         void SetupRendering();
         void FlushVB(wolf::Material* currentMaterial, const std::vector<Point>& vertices);
+
         wolf::VertexDeclaration* m_pDecl = nullptr; // Declartion
         wolf::VertexBuffer* m_pVB = nullptr;        // Vertex buffer
-        wolf::Texture* m_pTexture = nullptr;        // Texture of the point
 
 };

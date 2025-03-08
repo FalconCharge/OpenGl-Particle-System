@@ -9,20 +9,22 @@
 
 struct Point{
     GLfloat x,y,z,w;       // Position Cords
+    GLfloat r, g, b, a;
     GLfloat rotation;
 };
+
+class PointBB;
+class SpawnProperties;
 
 class Emitter : public Node{
     public:
         const int NUM_OF_PARTICLES_IN_POOL = 1000;
 
         Emitter();
-        ~Emitter(){}
+        ~Emitter();
 
         // Creates a Pool of Particles which the Emitter will use
         void Init();
-        // Sets the current Node with a switch statments defaulting to continuous
-        void SetMode(const std::string& p_sMode);
 
         // For adjusting the color, size, rotations
         void UpdateColor(glm::vec4 color){if(m_pMaterial) m_pMaterial->SetUniform("color", color);}
@@ -44,14 +46,36 @@ class Emitter : public Node{
 
 
         //Adding Affectors and removing
-        void AddAffector(Affector* affector){m_affectors.push_back(affector);}
+        void AddAffector(Affector* affector){if(affector) m_affectors.push_back(affector);}
+        // Add A spawn property to be applied to the particles
+
+        void AddSpawnProperty(SpawnProperties* spawnProperty){if(spawnProperty) m_SpawnProperties.push_back(spawnProperty);}
         // Make a remove affector soon Porbably make it by name or something
 
         AABB& CalculateVolume();
 
+        void SetNumParticles(int numParticles){m_iParticles = numParticles;}
+        void SetMode(std::string mode);
+        void SetDuration(float duration){m_fMaxTimeAlive = duration;}
+        void SetBirthRate(float birthRate){m_birthRate = birthRate;}
+
+        void SetBurstCount(float birthCount){m_burstCount = birthCount;}
+        void SetBurstInterval(float burstInterval){m_burstInterval = burstInterval;}
+        void SetBurstRandom(bool random){m_burstRandom = random;}
+
     private:
-        // Emitter mode: "CONTINUOUS" or "BURST".
-        std::string m_sMode = "CONTINUOUS";
+        int m_iParticles = 1000;                    // Amount of Particles in the Pool
+        std::string m_sMode = "CONTINUOUS";        // Emitter mode: "CONTINUOUS" or "BURST".
+        float m_fTimeAlive = 0.0f;
+        float m_fMaxTimeAlive = 20.0f;
+
+        // For Burst Mode
+        float m_burstCount = 5.0f; // Number of particles to spawn in a burst
+        float m_burstInterval = 5.0f; // The amount of TimeBTW each burst
+        float m_burstTime = 0.0f;   // Keeps track of how long since last burst
+        bool m_burstRandom = false;
+
+
 
         // Variables for burst emission.
         float m_birthRate = 50.0f;
@@ -59,9 +83,6 @@ class Emitter : public Node{
         float m_fBurstTimeMin = 0.0f;
         float m_fBurstTimeMax = 2.0f;
         bool m_bRandomBurstRate = false;
-
-        // Duration the emitter has been active.
-        float m_fDuration = 0.0f;
 
         // Accumulator for particle spawning.
         float m_toSpawn_accumulator = 0.0f;
@@ -97,8 +118,12 @@ class Emitter : public Node{
             std::cout << "You didn't Add a certain type of emitter" << std::endl;
         }
         void ApplyAffectors(float p_fDelta);
+        void ApplySpawnProperties(PointBB* p, const SpawnProperties* props);
 
         void RecycleParticle(Particle* p);
+
+        void SortParticlesByDistance(std::vector<PointBB*>& particles);
+        
 
 
         //Material on the emitter
@@ -107,6 +132,10 @@ class Emitter : public Node{
         wolf::Texture* m_pTexture = nullptr;
 
         std::vector<Affector*> m_affectors;
+        std::vector<SpawnProperties*> m_SpawnProperties;
 
         AABB m_bounds;
+
+
+        std::vector<PointBB> m_particlePool; // Used for deleting the memory
 };

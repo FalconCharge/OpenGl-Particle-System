@@ -18,6 +18,17 @@ void Node::AddChild(Node* newChild){
     //Default coloring
 
 }
+void Node::RemoveChild(Node* child) {
+    if (child == nullptr) return;  // Safety check
+
+    auto it = std::find(m_children.begin(), m_children.end(), child);
+    if (it != m_children.end()) {
+        child->SetParent(nullptr);  // Detach child from parent
+        m_children.erase(it);       // Remove child from vector/list
+        m_isDirty = true;           // Mark the node as changed
+    }
+}
+
 
 void Node::SetParent(Node* parent){
     m_parent = parent;

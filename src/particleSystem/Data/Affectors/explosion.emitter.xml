@@ -1,0 +1,4 @@
+<emitter name="explosion" num_particles="500" duration="1.5" type="burst" birthrate="500">
+    <affector type="direction" direction="1,1,1" speed="10.0"/> <!-- Moves particles outward -->
+    <affector type="scale" value="2.0"/> <!-- Scales particles up -->
+</emitter>
