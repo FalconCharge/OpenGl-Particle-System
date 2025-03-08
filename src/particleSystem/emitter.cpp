@@ -31,7 +31,7 @@ Emitter::~Emitter() {
 }
 
 void Emitter::Init(){
-    // Change the vector to hold all particles
+    // A vector which holds all the particles in memory
     m_particlePool.resize(m_iParticles);
 
     // Add all the particles to the free list
@@ -49,10 +49,10 @@ void Emitter::Init(){
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
-    //m_pMaterial->SetDepthTest(true);  // Disabling depth testing for transparency
+    m_pMaterial->SetDepthTest(false);  // Disabling depth testing for transparency
     m_pMaterial->SetBlend(true);       // Enable blending
     m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_OneMinusSrcAlpha); // Standard transparency blend mode
-    //m_pMaterial->SetBlendEquation(wolf::BE_Add); // Additive blending
+    m_pMaterial->SetBlendEquation(wolf::BE_Add); // Additive blending
     m_pMaterial->SetProgram("Data/Shader/glPoint.vsh", "Data/Shader/default.fsh");
 
     m_pTexture = wolf::TextureManager::CreateTexture("Data/textures/particles/smoke_01.png");
@@ -94,6 +94,7 @@ void Emitter::SpawnParticle(){
     // If not free Particle, Kill one from the active list
     if(!p){
         if(m_pActiveList){
+            // Getting the oldest particle
             Particle* tail = m_pActiveList;
             while(tail->next){
                 tail = tail->next;
@@ -163,6 +164,9 @@ void Emitter::Update(float p_fDelta){
         PointBB* point = static_cast<PointBB*>(currentParticle);
         // Update particle
         point->Update(p_fDelta);
+        for(auto& affector : m_affectors){
+            affector->Apply(point, p_fDelta);
+        }
         point->SetCameraDistance(glm::length(point->GetPosition() - Scene::Instance().GetActiveCamera()->getViewPosition()));
 
         // If expired, remove it from active and add to free list
@@ -176,6 +180,7 @@ void Emitter::Update(float p_fDelta){
         currentParticle = nextParticle;
 
     }
+
     // Sort particles by distance after collecting
     SortParticlesByDistance(activeParticles);
     
@@ -208,8 +213,15 @@ void Emitter::Update(float p_fDelta){
             SpawnParticle();
         }
         
+    }else if("BURST"){
+        m_burstTime += p_fDelta;
+        if(m_burstTime >= m_burstInterval){
+            for(int i = 0; i < m_burstCount; i++){
+                SpawnParticle();
+            }
+            m_burstTime = 0.0f;
+        }
     }
-    ApplyAffectors(p_fDelta);
 }
 
 void Emitter::Play() {
@@ -278,8 +290,6 @@ wolf::Material* Emitter::GetMaterial(){
     return m_pMaterial;
 }
 void Emitter::GetVertexData(std::vector<Point>& vertexData){
-
-
     Particle* currentParticle = m_pActiveList;
 
     while(currentParticle != nullptr){
@@ -301,19 +311,9 @@ void Emitter::GetVertexData(std::vector<Point>& vertexData){
         vertexData.push_back(pointVertex);
 
         currentParticle = currentParticle->next;
+    }
+}
 
-    }
-}
-void Emitter::ApplyAffectors(float p_fDelta){
-    Particle* current = m_pActiveList;
-    while(current){
-        PointBB* point = static_cast<PointBB*>(current);
-        for(auto& affector : m_affectors){
-            affector->Apply(point, p_fDelta);
-        }
-        current = current->next;
-    }
-}
 void Emitter::ApplySpawnProperties(PointBB* particle, const SpawnProperties* props) {
     if (props->name == "velocity") {
         if (props->type == "random") {
@@ -368,7 +368,7 @@ AABB& Emitter::CalculateVolume() {
 void Emitter::SortParticlesByDistance(std::vector<PointBB*>& particles) {
     // Sort particles from farthest to closest to the camera
     std::sort(particles.begin(), particles.end(), [](PointBB* a, PointBB* b) {
-        return a->GetCameraDistance() > b->GetCameraDistance();  // Descending order
+        return a->GetCameraDistance() < b->GetCameraDistance();  
     });
 }
 

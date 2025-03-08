@@ -1,30 +1,30 @@
+//-----------------------------------------------------------------------------
+// File:            particleDriver.h
+// Original Author: Ben Harper
+// Date:            March.8/2025
+//
+// Description:
+// ParticleDriver is the main application class for the particle system demo. 
+// It handles initialization, rendering, and updating of the particle system, 
+// along with managing the scene, camera, and UI elements.
+//
+//-----------------------------------------------------------------------------  
+
+
+
 #pragma once
 
 #include "../../wolf/wolf.h"
-#include <string>
 
 #include "../nodeClass/scene.h"    //A singleton which stores the instance of the scene
 
-#include "../nodeClass/node.h"
-#include "../nodeClass/debugCube.h"
-#include "billBoard.h"
-#include "pointBB.h"
-#include "effect.h"
-#include "boxEmitter.h"
-#include "../tinyxml/tinyxml.h"
-
-#include "circleShapeParticle.h"
-
-//Affectors
-#include "movementAffectors.h"
-#include "gravityAffector.h"
-#include "scaleAffector.h"
-#include "rotateAffector.h"
-
+#include "../nodeClass/debugCube.h"     // Ground
 #include "../textRendering/src/TextBox.h"
-
+#include "effect.h"
 #include "particleSystemFactory.h"
-#include "../utility/Unility.h"
+
+#include <string>
+
 
 //Helper for the runner
 int RunParticleSystemDemo();
@@ -54,34 +54,34 @@ class ParticleDriver : public wolf::App {
         // Renders all the Nodes within the Scene Instance
         // This method overrides from a call in wolf which is called each frame
         */
-        void render() override;
+        void render();
 
 
 
     private:
-        // Load an effect from file
+        // Loads an effect from a certain file
         void LoadEffect(const std::string& filename);
 
-        // Create an effect from file
-        Effect* CreateEffectFromFile(const std::string& filename);
-        // Load an emitter from file
-        void LoadEmitterFromFile(const std::string& emitterFile, Emitter* emitter);
-        // Reload the particle system
         void ReloadParticleSystem();
 
-        // Starts the build for the demo enviroment
         void BuildDemoEnviroment();
-        // Create an emitter
-        void CreateEffect();
-        // Builds a Smoke Object
-        void BuildSmoke();
-        // Creats an Effect from file
+
+        void SetupCamera();
+
+        void SetUpTextBox();
+
+        void UpdateEffect();
+
+
+
 
         Camera* m_pMainCamera = nullptr;
         TextBox* m_pFPSTextBox = nullptr;
         // Current Effect Should Prob change this to spawn several in
         Effect* m_pEffect = nullptr;
 
-        // Map to store emitters by their file paths
-        std::unordered_map<std::string, Emitter*> m_emitters;
+        std::vector<std::string> m_effectFileNames;
+
+        int m_index = 0;
+
 };

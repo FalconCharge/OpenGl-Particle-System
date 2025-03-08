@@ -55,7 +55,6 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
 
 // Factory method to create an Emitter
 Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, const glm::vec3& offset) {
-    std::cout << "Creating an emitter through factory" << std::endl;
     if(!emitterNode){
         std::cerr <<"Emitter Node is null" << std::endl;
         return nullptr;
@@ -103,6 +102,16 @@ Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, c
     if (const char* birthRateAttr = emitterConfigNode->Attribute("birthrate")) {
         float birthRate = std::stof(birthRateAttr); // Convert string to float
         emitter->SetBirthRate(birthRate);
+    }
+
+    // Parse burst properties (if in burst mode)
+    if (const char* burstCountAttr = emitterConfigNode->Attribute("burst_count")) {
+        int burstCount = std::stoi(burstCountAttr); // Convert string to int
+        emitter->SetBurstCount(burstCount);
+    }
+    if (const char* burstIntervalAttr = emitterConfigNode->Attribute("burst_interval")) {
+        float burstInterval = std::stof(burstIntervalAttr); // Convert string to float
+        emitter->SetBurstInterval(burstInterval);
     }
 
     emitter->SetLocalPosition(offset);

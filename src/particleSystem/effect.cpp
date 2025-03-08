@@ -5,9 +5,9 @@
 #include <ctime>    // For time()
 
 Effect::Effect(){
-    // Creates an effect with certain paramets I think
+    
     SetVolume(CalculateVolume());
-    //glEnable(GL_DYNAMIC_DRAW); // Use when flushing the VB
+
     SetWorldPosition(glm::vec3(0));
 
     SetupRendering();
@@ -32,12 +32,8 @@ Effect::~Effect() {
         delete m_pDecl;
         m_pDecl = nullptr;
     }
-    if(m_pTexture){
-        wolf::TextureManager::DestroyTexture(m_pTexture);
-        m_pTexture = nullptr;
-    }
 
-    std::cout << "Effect destructor finished." << std::endl;
+    std::cout << "Effect Destoryed." << std::endl;
 }
 
 // Runs the the Emitters and Calls Update
@@ -127,9 +123,6 @@ void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
     }
 }
 void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& vertices){
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthMask(GL_FALSE);
-
     if(m_pVB == nullptr){
         std::cout << "[ERROR] m_pVB is null | Location: Effect class" << std::endl;
         return;
@@ -148,20 +141,18 @@ void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& ver
     std::cout << "[Vertex Data] End\n";*/
 
     // Write the vertex data to the vertex buffer
-    m_pVB->Write(vertices.data(), vertices.size() * sizeof(Point));
+    m_pVB->Update(vertices.data(), vertices.size() * sizeof(Point));
 
     currMaterial->Apply();
 
     m_pDecl->Bind();
 
     glDrawArrays(GL_POINTS, 0, vertices.size());
-
-    //glDepthMask(GL_TRUE);
 }
 
 void Effect::SetupRendering(){
-    // Shader Is set in Emitters
-    m_pVB = wolf::BufferManager::CreateVertexBuffer(100000);    // Max size 100k?
+    // Sets up the VB which will collect all the points data
+    m_pVB = wolf::BufferManager::CreateVertexBuffer(1000000);    // Max size 100k?
 
     m_pDecl = new wolf::VertexDeclaration();
 

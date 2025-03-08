@@ -59,11 +59,21 @@ class Emitter : public Node{
         void SetDuration(float duration){m_fMaxTimeAlive = duration;}
         void SetBirthRate(float birthRate){m_birthRate = birthRate;}
 
+        void SetBurstCount(float birthCount){m_burstCount = birthCount;}
+        void SetBurstInterval(float burstInterval){m_burstInterval = burstInterval;}
+        void SetBurstRandom(bool random){m_burstRandom = random;}
+
     private:
         int m_iParticles = 1000;                    // Amount of Particles in the Pool
         std::string m_sMode = "CONTINUOUS";        // Emitter mode: "CONTINUOUS" or "BURST".
         float m_fTimeAlive = 0.0f;
         float m_fMaxTimeAlive = 20.0f;
+
+        // For Burst Mode
+        float m_burstCount = 5.0f; // Number of particles to spawn in a burst
+        float m_burstInterval = 5.0f; // The amount of TimeBTW each burst
+        float m_burstTime = 0.0f;   // Keeps track of how long since last burst
+        bool m_burstRandom = false;
 
 
 
