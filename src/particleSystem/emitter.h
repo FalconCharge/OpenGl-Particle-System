@@ -9,15 +9,18 @@
 
 struct Point{
     GLfloat x,y,z,w;       // Position Cords
+    GLfloat r, g, b, a;
     GLfloat rotation;
 };
+
+class PointBB;
 
 class Emitter : public Node{
     public:
         const int NUM_OF_PARTICLES_IN_POOL = 1000;
 
         Emitter();
-        ~Emitter(){}
+        ~Emitter();
 
         // Creates a Pool of Particles which the Emitter will use
         void Init();
@@ -42,7 +45,7 @@ class Emitter : public Node{
 
 
         //Adding Affectors and removing
-        void AddAffector(Affector* affector){m_affectors.push_back(affector);}
+        void AddAffector(Affector* affector){if(affector) m_affectors.push_back(affector);}
         // Make a remove affector soon Porbably make it by name or something
 
         AABB& CalculateVolume();
@@ -104,6 +107,9 @@ class Emitter : public Node{
 
         void RecycleParticle(Particle* p);
 
+        void SortParticlesByDistance(std::vector<PointBB*>& particles);
+        
+
 
         //Material on the emitter
         wolf::Material* m_pMaterial = nullptr;
@@ -113,4 +119,7 @@ class Emitter : public Node{
         std::vector<Affector*> m_affectors;
 
         AABB m_bounds;
+
+
+        std::vector<PointBB> m_particlePool; // Used for deleting the memory
 };

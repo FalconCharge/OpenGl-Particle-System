@@ -1,4 +1,12 @@
-<emitter name="fire" num_particles="150" duration="3.0" type="continuous" birthrate="50">
-    <affector type="direction" direction="0,1,0" speed="2.0"/> <!-- Moves particles upward -->
-    <affector type="rotate" value="5.0"/> <!-- Adds random rotation -->
+<emitter name="smoke" num_particles="1000" duration="50" type="continuous" birthrate="100">
+    <affector type="scale">
+        <property name="mode" value="Instant"/>
+        <property name="start" value="1000"/>
+        <property name="end" value="3000"/>
+    </affector>
+    <affector type="color">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="0, 0, 0, 1"/>
+        <property name="end" value="1, 1, 1, 1"/>
+    </affector>
 </emitter>

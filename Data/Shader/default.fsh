@@ -26,6 +26,7 @@ void main()
 
     PixelColor = diffuse * Color;
 
+    //PixelColor = vec4(0, 0, 0, Color.a);
     // Simple checker pattern to visualize rotation
     //float checker = step(0.0, sin(rotatedUV.x * 10.0) * sin(rotatedUV.y * 10.0));
     

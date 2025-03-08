@@ -9,6 +9,7 @@
 #include "scaleAffector.h"
 #include "colorAffector.h"
 #include "gravityAffector.h"
+#include "fadeAffector.h"
 
 // Factory method to create an Effect
 Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
@@ -144,6 +145,8 @@ Affector* ParticleSystemFactory::CreateAffector(const TiXmlElement* affectorNode
         return CreateColorAffector(affectorNode);
     } else if(typeStr == "gravity"){
         return CreateGravityAffector(affectorNode);
+    } else if(typeStr == "fade"){
+        return CreateFadeAffector(affectorNode);
     }
     // Add more else if statements for additional affector types.
     else {
@@ -184,7 +187,7 @@ Affector* ParticleSystemFactory::CreateScaleAffector(const TiXmlElement* affecto
 }
 Affector* ParticleSystemFactory::CreateColorAffector(const TiXmlElement* affectorNode) {
     std::string mode;
-    glm::vec4 startColor(1.0f), endColor(1.0f);
+    glm::vec3 startColor(1.0f), endColor(1.0f);
     
     for (const TiXmlElement* property = affectorNode->FirstChildElement("property"); 
          property; property = property->NextSiblingElement("property")) {
@@ -199,9 +202,9 @@ Affector* ParticleSystemFactory::CreateColorAffector(const TiXmlElement* affecto
         if (propName == "mode") {
             mode = valueAttr;
         } else if (propName == "start") {
-            startColor = ParseVec4(valueAttr);
+            startColor = ParseVec3(valueAttr);
         } else if (propName == "end") {
-            endColor = ParseVec4(valueAttr);
+            endColor = ParseVec3(valueAttr);
         }
     }
     return new ColorAffector(startColor, endColor, mode);
@@ -231,3 +234,35 @@ Affector* ParticleSystemFactory::CreateGravityAffector(const TiXmlElement* affec
     return new GravityAffector(strength);
 }
 
+Affector* ParticleSystemFactory::CreateFadeAffector(const TiXmlElement* affectorNode) {
+    std::string mode;
+    float startAlpha = 1.0f, endAlpha = 1.0f, midAlpha = 1.0f;
+    
+    // Loop through each property element to extract values.
+    for (const TiXmlElement* property = affectorNode->FirstChildElement("property"); 
+         property; property = property->NextSiblingElement("property")) {
+        
+        const char* nameAttr = property->Attribute("name");
+        const char* valueAttr = property->Attribute("value");
+        if (!nameAttr || !valueAttr) {
+            std::cerr << "Warning: Missing property name or value in ScaleAffector" << std::endl;
+            continue;
+        }
+        std::string propName(nameAttr);
+        try {
+            if (propName == "mode") {
+                mode = valueAttr;
+            } else if (propName == "start") {
+                startAlpha = std::stof(valueAttr);
+            } else if (propName == "end") {
+                endAlpha = std::stof(valueAttr);
+            } else if(propName == "mid"){
+                midAlpha = std::stof(valueAttr);
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error parsing ScaleAffector property " << propName << ": " << e.what() << std::endl;
+            return nullptr;
+        }
+    }
+    return new FadeAffector(startAlpha, midAlpha, endAlpha, mode);
+}

@@ -5,38 +5,59 @@
 Emitter::Emitter(){
     
 }
+Emitter::~Emitter() {
+    std::cout << "Emitter destructor called!" << std::endl;
+
+    m_particlePool.clear();
+    m_pActiveList = nullptr;
+    m_pFreeList = nullptr;
+
+
+    // Clean up the material and texture
+    if (m_pMaterial) {
+        wolf::MaterialManager::DestroyMaterial(m_pMaterial);
+        m_pMaterial = nullptr;
+    }
+
+    if (m_pTexture) {
+        wolf::TextureManager::DestroyTexture(m_pTexture);
+        m_pTexture = nullptr;
+    }
+
+    // Clean up affectors (if dynamically allocated)
+    for (auto affector : m_affectors) {
+        delete affector;
+    }
+    m_affectors.clear();
+}
 
 void Emitter::Init(){
-    
-    PointBB* pParticles = new PointBB[NUM_OF_PARTICLES_IN_POOL];
-    for(int i = 0; i < NUM_OF_PARTICLES_IN_POOL; i++){
-        this->AddToPool(&pParticles[i]);
+    // Change the vector to hold all particles
+    m_particlePool.resize(m_iParticles);
+
+    // Add all the particles to the free list
+    for(PointBB& particle : m_particlePool){
+        AddToPool(&particle);
     }
+    /* Previous method Couldn't delete particles in memory some reason (This method sucks)
+    PointBB* pParticles = new PointBB[m_iParticles];
+    for(int i = 0; i < m_iParticles; i++){
+        this->AddToPool(&pParticles[i]);
+    }*/
 
 
     // Create the Material for the emitter
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
-    m_pMaterial->SetDepthTest(false);
-    m_pMaterial->SetBlend(true);
-    m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_One);
-    m_pMaterial->SetBlendEquation(wolf::BE_Add);
-    
-
-
-    //m_pMaterial->SetPoint(true); Enable the     glEnable(GL_PROGRAM_POINT_SIZE); currently set in driver
+    //m_pMaterial->SetDepthTest(true);  // Disabling depth testing for transparency
+    m_pMaterial->SetBlend(true);       // Enable blending
+    m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_OneMinusSrcAlpha); // Standard transparency blend mode
+    //m_pMaterial->SetBlendEquation(wolf::BE_Add); // Additive blending
     m_pMaterial->SetProgram("Data/Shader/glPoint.vsh", "Data/Shader/default.fsh");
 
     m_pTexture = wolf::TextureManager::CreateTexture("Data/textures/particles/smoke_01.png");
     m_pMaterial->SetTexture("texture1", m_pTexture);
-    m_pMaterial->SetUniform("color", this->getColor());
-
-    m_pMaterial->SetUniform("size", 500);   // Sets the size of the Point should be moved into PointBB
-    m_pMaterial->SetUniform("size", 1500);   // Sets the size of the Point should be moved into PointBB
-
-
-    m_pMaterial->SetUniform("aRotation", 45);   // Just rotates the UVs so it's still a square
 
 
     // Static Materials (This should change)
@@ -82,7 +103,7 @@ void Emitter::SpawnParticle(){
             RecycleParticle(tail);
             // Get the free Particle now
             p = GetFreeParticle();
-            std::cout << "Got free particle through recycling" << std::endl;
+            //std::cout << "Got free particle through recycling" << std::endl;
         }
     }
 
@@ -131,6 +152,8 @@ void Emitter::SetMode(std::string p_sMode) {
 void Emitter::Update(float p_fDelta){
     // Update active particles
     Particle* currentParticle = m_pActiveList;
+    std::vector<PointBB*> activeParticles;  // A list of active particles which will store in order based on cam distance
+
 
     while (currentParticle != 0) {
         Particle* nextParticle = currentParticle->next;
@@ -138,18 +161,27 @@ void Emitter::Update(float p_fDelta){
         PointBB* point = static_cast<PointBB*>(currentParticle);
         // Update particle
         point->Update(p_fDelta);
+        point->SetCameraDistance(glm::length(point->GetPosition() - Scene::Instance().GetActiveCamera()->getViewPosition()));
 
         // If expired, remove it from active and add to free list
         if (point->IsExpired()) {
             ParticleKilled(currentParticle);
+        }else{
+            activeParticles.push_back(point);
         }
+
 
         currentParticle = nextParticle;
 
     }
-
+    // Sort particles by distance after collecting
+    SortParticlesByDistance(activeParticles);
     
-
+    // Optionally, put the particles back in the linked list (if needed)
+    m_pActiveList = nullptr;
+    for (PointBB* particle : activeParticles) {
+        AddToActive(particle);
+    }
 
     if(m_sMode == "CONTINUOUS"){
         float birth_Rate = 0;
@@ -244,6 +276,8 @@ wolf::Material* Emitter::GetMaterial(){
     return m_pMaterial;
 }
 void Emitter::GetVertexData(std::vector<Point>& vertexData){
+
+
     Particle* currentParticle = m_pActiveList;
 
     while(currentParticle != nullptr){
@@ -253,7 +287,12 @@ void Emitter::GetVertexData(std::vector<Point>& vertexData){
         pointVertex.x = point->GetPosition().x;
         pointVertex.y = point->GetPosition().y;
         pointVertex.z = point->GetPosition().z;
-        pointVertex.w = point->GetScale();
+        pointVertex.w = point->GetSize();
+
+        pointVertex.r = point->GetColor().r;
+        pointVertex.g = point->GetColor().g;
+        pointVertex.b = point->GetColor().b;
+        pointVertex.a = point->GetFade();
 
         pointVertex.rotation = point->GetRotation();
 
@@ -262,7 +301,6 @@ void Emitter::GetVertexData(std::vector<Point>& vertexData){
         currentParticle = currentParticle->next;
 
     }
-    vertexData.insert(vertexData.end(), m_vertexData.begin(), m_vertexData.end());
 }
 void Emitter::ApplyAffectors(float p_fDelta){
     Particle* current = m_pActiveList;
@@ -293,3 +331,11 @@ AABB& Emitter::CalculateVolume() {
     m_bounds = AABB(glm::vec3(0, 0, 0), 1000);
     return m_bounds;
 }
+
+void Emitter::SortParticlesByDistance(std::vector<PointBB*>& particles) {
+    // Sort particles from farthest to closest to the camera
+    std::sort(particles.begin(), particles.end(), [](PointBB* a, PointBB* b) {
+        return a->GetCameraDistance() > b->GetCameraDistance();  // Descending order
+    });
+}
+

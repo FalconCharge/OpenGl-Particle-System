@@ -3,7 +3,7 @@
 
 class ColorAffector : public Affector {
     public:
-        ColorAffector(const glm::vec4& startColor, const glm::vec4& endColor, std::string mode)
+        ColorAffector(const glm::vec3& startColor, const glm::vec3& endColor, std::string mode)
             : m_StartColor(startColor), m_EndColor(endColor), m_Mode(mode)  {}
     
         void Apply(Particle* particle, float deltaTime) override {
@@ -17,13 +17,13 @@ class ColorAffector : public Affector {
                 point->SetColor(m_EndColor);
             }else{
                 // White color output for default
-                point->SetColor(glm::vec4(1));
+                point->SetColor(glm::vec3(1));
             }
         }
     
     private:
-        glm::vec4 m_StartColor;
-        glm::vec4 m_EndColor;
+        glm::vec3 m_StartColor;
+        glm::vec3 m_EndColor;
         std::string m_Mode;
     };
     

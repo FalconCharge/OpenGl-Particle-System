@@ -29,6 +29,8 @@ private:
     static Affector* CreateScaleAffector(const TiXmlElement* affectorNode);
     static Affector* CreateColorAffector(const TiXmlElement* affectorNode);
     static Affector* CreateGravityAffector(const TiXmlElement* affectorNode);
+    static Affector* CreateFadeAffector(const TiXmlElement* affectorNode);
+
     
 
 

@@ -18,7 +18,6 @@
 //Affectors
 #include "movementAffectors.h"
 #include "gravityAffector.h"
-#include "lifeTimeAffector.h"
 #include "scaleAffector.h"
 #include "rotateAffector.h"
 

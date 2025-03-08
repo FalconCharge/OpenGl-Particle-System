@@ -77,7 +77,7 @@ void ParticleDriver::CreateEffect() {
 
 void ParticleDriver::BuildDemoEnviroment(){
     
-    DebugCube *pCube1 = new DebugCube(glm::vec3(0, -5, 0), glm::vec3(5, 0.25, 5), glm::vec3(0));
+    DebugCube *pCube1 = new DebugCube(glm::vec3(0, 0, 0), glm::vec3(10, 0.25, 10), glm::vec3(0));
     pCube1->SetName("Ground");
     pCube1->SetShader("Data/Shader/groundShader.vsh", "Data/Shader/groundShader.fsh");  //Needs to be called before init
     pCube1->Init();

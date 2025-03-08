@@ -14,10 +14,10 @@ class ScaleAffector : public Affector{
             PointBB* point = static_cast<PointBB*>(particle);
             if(m_Mode == "OverLife"){
                 float t = point->GetTimeAlive() / point->GetMaxTimeAlive();
-                point->SetScale(glm::mix(m_StartScale, m_EndScale, t));
+                point->SetSize(glm::mix(m_StartScale, m_EndScale, t));
             }
             else if (m_Mode == "Instant") {
-                point->SetScale(m_EndScale);
+                point->SetSize(m_EndScale);
             }
         }
 

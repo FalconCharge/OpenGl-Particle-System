@@ -1,12 +1,29 @@
-<emitter name="smoke" num_particles="50000" duration="3" type="continuous" birthrate="1000">
+<emitter name="smoke" num_particles="1000" duration="-1" type="continuous" birthrate="12">
+    <!-- Scale Affector -->
     <affector type="scale">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="1000"/>
+        <property name="start" value="1"/>
         <property name="end" value="3000"/>
     </affector>
+
+    <!-- Color Affector -->
     <affector type="color">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="0, 0, 0, 1"/>
-        <property name="end" value="1, 1, 1, 1"/>
+        <property name="start" value="0.3, 0.3, 0.3"/> <!-- Dark gray for smoke at birth -->
+        <property name="end" value="1.0, 1.0, 1.0"/> <!-- Fades to white -->
+    </affector>
+
+    <!-- Fade Affector -->
+    <affector type="fade">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="1"/>   <!-- Fully opaque at start -->
+        <property name="mid" value="0.5"/>   <!-- Partially transparent in the middle -->
+        <property name="end" value="0"/>     <!-- Fully transparent at the end -->
+    </affector>
+
+    <!-- Gravity Affector -->
+    <affector type="gravity">
+        <property name="direction" value="0.0f, -9.81f, 0.0f"/> <!-- Gravity pulling down -->
+        <property name="strength" value="-0.1"/> <!-- The strength of gravity -->
     </affector>
 </emitter>

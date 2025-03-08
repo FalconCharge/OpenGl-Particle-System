@@ -12,9 +12,38 @@ Effect::Effect(){
 
     SetupRendering();
 }
-Effect::~Effect(){
-    //Cleans out all the emitters
+Effect::~Effect() {
+    std::cout << "Effect destructor called!" << std::endl;
+
+    // Clean up all emitters
+    for (Emitter* e : m_pEmitters) {
+        if (e) {
+            std::cout << "Deleting emitter: " << e << std::endl;
+            delete e;
+        }
+    }
     m_pEmitters.clear();
+
+    // Clean up the vertex buffer
+    if (m_pVB) {
+        std::cout << "Destroying vertex buffer: " << m_pVB << std::endl;
+        wolf::BufferManager::DestroyBuffer(m_pVB);
+        m_pVB = nullptr;
+    }
+
+    // Clean up the vertex declaration
+    if (m_pDecl) {
+        std::cout << "Deleting vertex declaration: " << m_pDecl << std::endl;
+        delete m_pDecl;
+        m_pDecl = nullptr;
+    }
+    if(m_pTexture){
+        std::cout << "Deleting texture on effect" << m_pTexture << std::endl;
+        wolf::TextureManager::DestroyTexture(m_pTexture);
+        m_pTexture = nullptr;
+    }
+
+    std::cout << "Effect destructor finished." << std::endl;
 }
 
 // Runs the the Emitters and Calls Update
@@ -102,11 +131,27 @@ void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
     }
 }
 void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& vertices){
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+
     if(m_pVB == nullptr){
         std::cout << "[ERROR] m_pVB is null | Location: Effect class" << std::endl;
         return;
     }
 
+    // Print vertex data before writing to the buffer
+    /*
+    std::cout << "[Vertex Data] Begin\n";
+    for (const Point& vertex : vertices) {
+        std::cout << "Position: (" << vertex.x << ", " << vertex.y << ", " << vertex.z << "), "
+                  << "Size: " << vertex.w << ", "
+                  << "Color: (" << vertex.r << ", " << vertex.g << ", " << vertex.b << "), "
+                  << "Alpha: " << vertex.a << ", "
+                  << "Rotation: " << vertex.rotation << std::endl;
+    }
+    std::cout << "[Vertex Data] End\n";*/
+
+    // Write the vertex data to the vertex buffer
     m_pVB->Write(vertices.data(), vertices.size() * sizeof(Point));
 
     currMaterial->Apply();
@@ -115,7 +160,9 @@ void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& ver
 
     glDrawArrays(GL_POINTS, 0, vertices.size());
 
+    glDepthMask(GL_TRUE);
 }
+
 void Effect::SetupRendering(){
     // Shader Is set in Emitters
     m_pVB = wolf::BufferManager::CreateVertexBuffer(100000);    // Max size 100k?
@@ -124,7 +171,9 @@ void Effect::SetupRendering(){
 
     m_pDecl->Begin();
     m_pDecl->AppendAttribute(wolf::AT_Position, 4, wolf::CT_Float);     // Pos attr + scale.w
-    m_pDecl->AppendAttribute(wolf::AT_Color, 1, wolf::CT_Float);    // Rotation attr
+    m_pDecl->AppendAttribute(wolf::AT_Color, 4, wolf::CT_Float);    // Rotation attr
+    m_pDecl->AppendAttribute(wolf::AT_TexCoord1, 1, wolf::CT_Float);    // Rotation attr
+
     m_pDecl->SetVertexBuffer(m_pVB);
     m_pDecl->End();
 }

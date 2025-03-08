@@ -1,6 +1,5 @@
-<effect name="explosion" position="0,5,0" scale="1,1,1" rotation="0,0,0">
+<effect name="fireEffect" position="0,-4,0" scale="1,1,1" rotation="0,0,0">
     <!-- Smoke Emitter -->
-    <emitter file="src/particleSystem/Data/Affectors/smoke.emitter.xml" offset="5,5,5"/>
-    <!-- Testing Emitter -->
-    <emitter file="src/particleSystem/Data/Affectors/custom.emitter.xml" offset="5,5,0"/>
+
+    <emitter file="src/particleSystem/Data/Affectors/smoke.emitter.xml" offset="0,0,0"/>
 </effect>
