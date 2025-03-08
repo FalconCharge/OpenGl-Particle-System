@@ -9,6 +9,7 @@ class Effect;
 class Emitter;
 class PointBB;
 class Affector;
+struct SpawnProperties;
 
 class ParticleSystemFactory {
 public:
@@ -24,12 +25,16 @@ public:
     // Factory method to create an Affector
     static Affector* CreateAffector(const TiXmlElement* affectorNode);
 
+    // Factory Method to create a Spawn Property which is added to the emitter then to each point
+    static SpawnProperties* CreateSpawnProperties(const TiXmlElement* spawnPropNode);
+
 private:
 
     static Affector* CreateScaleAffector(const TiXmlElement* affectorNode);
     static Affector* CreateColorAffector(const TiXmlElement* affectorNode);
     static Affector* CreateGravityAffector(const TiXmlElement* affectorNode);
     static Affector* CreateFadeAffector(const TiXmlElement* affectorNode);
+    static Affector* CreateTurbulenceAffector(const TiXmlElement* affectorNode);
 
     
 

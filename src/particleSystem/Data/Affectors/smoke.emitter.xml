@@ -1,4 +1,8 @@
-<emitter name="smoke" num_particles="1000" duration="-1" type="continuous" birthrate="12">
+<emitter name="smoke" num_particles="1000" duration="-1" type="continuous" birthrate="100">
+    <spawn_property name="velocity" type="random" min="0,0,0" max="0,1,0"/>
+    <spawn_property name="color" type="constant" value="1,1,0,1"/>
+    <spawn_property name="size" type="random" min="16" max="24"/>
+    <spawn_property name="lifeTime" type="random" min="1" max="15"/>
     <!-- Scale Affector -->
     <affector type="scale">
         <property name="mode" value="OverLife"/>
@@ -17,7 +21,7 @@
     <affector type="fade">
         <property name="mode" value="OverLife"/>
         <property name="start" value="1"/>   <!-- Fully opaque at start -->
-        <property name="mid" value="0.5"/>   <!-- Partially transparent in the middle -->
+        <property name="mid" value="0.90"/>   <!-- Partially transparent in the middle -->
         <property name="end" value="0"/>     <!-- Fully transparent at the end -->
     </affector>
 
@@ -25,5 +29,9 @@
     <affector type="gravity">
         <property name="direction" value="0.0f, -9.81f, 0.0f"/> <!-- Gravity pulling down -->
         <property name="strength" value="-0.1"/> <!-- The strength of gravity -->
+    </affector>
+
+    <affector type="turbulence">
+        <property name="strength" value="1"/> <!-- Random movement -->
     </affector>
 </emitter>

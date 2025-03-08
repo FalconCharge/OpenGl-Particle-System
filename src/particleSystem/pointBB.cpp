@@ -13,7 +13,7 @@ PointBB::PointBB() :    m_position(glm::vec3(0)),
 }
 
 PointBB::~PointBB(){
-    std::cout << "Deleting Particle" << std::endl;
+    //std::cout << "Deleting Particle" << std::endl;
 }
 
 void PointBB::Init(){

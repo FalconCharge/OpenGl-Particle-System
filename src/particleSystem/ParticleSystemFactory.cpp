@@ -10,6 +10,7 @@
 #include "colorAffector.h"
 #include "gravityAffector.h"
 #include "fadeAffector.h"
+#include "turbulenceAffector.h"
 
 // Factory method to create an Effect
 Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
@@ -45,6 +46,7 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
         Emitter* emitter = CreateEmitter(emitterNode, offset);
         if (emitter) {
             effect->AddEmitter(emitter);
+        
             emitter->Init();
         }
     }
@@ -53,6 +55,7 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
 
 // Factory method to create an Emitter
 Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, const glm::vec3& offset) {
+    std::cout << "Creating an emitter through factory" << std::endl;
     if(!emitterNode){
         std::cerr <<"Emitter Node is null" << std::endl;
         return nullptr;
@@ -114,6 +117,16 @@ Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, c
         }
     }
 
+    // Parse Spawn Properties
+    for (const TiXmlElement* spawnPropNode = emitterConfigNode->FirstChildElement("spawn_property"); spawnPropNode; spawnPropNode = spawnPropNode->NextSiblingElement("spawn_property")) {
+        
+        // Create the affector using the factory
+        SpawnProperties* spawnProperty = CreateSpawnProperties(spawnPropNode);
+        if (spawnProperty) {
+            emitter->AddSpawnProperty(spawnProperty);
+        }
+    }
+
 
     return emitter; // Allocate memory and return raw pointer
 }
@@ -147,6 +160,8 @@ Affector* ParticleSystemFactory::CreateAffector(const TiXmlElement* affectorNode
         return CreateGravityAffector(affectorNode);
     } else if(typeStr == "fade"){
         return CreateFadeAffector(affectorNode);
+    } else if(typeStr == "turbulence"){
+        return CreateTurbulenceAffector(affectorNode);
     }
     // Add more else if statements for additional affector types.
     else {
@@ -154,7 +169,78 @@ Affector* ParticleSystemFactory::CreateAffector(const TiXmlElement* affectorNode
         return nullptr;
     }
 }
+SpawnProperties* ParticleSystemFactory::CreateSpawnProperties(const TiXmlElement* spawnPropNode) {
+    // Check if the node is valid
+    if (!spawnPropNode) {
+        std::cerr << "Error: SpawnProperties Node is null!" << std::endl;
+        return nullptr;
+    }
 
+    // Retrieve the "name" attribute
+    const char* spawnPropName = spawnPropNode->Attribute("name");
+    if (!spawnPropName) {
+        std::cerr << "Error: Spawn Property name is missing!" << std::endl;
+        return nullptr;
+    }
+
+    // Retrieve the "type" attribute
+    const char* spawnPropType = spawnPropNode->Attribute("type");
+    if (!spawnPropType) {
+        std::cerr << "Error: Spawn Property type is missing!" << std::endl;
+        return nullptr;
+    }
+
+    // Create a new SpawnProperties object
+    SpawnProperties* spawnProps = new SpawnProperties();
+    spawnProps->name = spawnPropName;
+    spawnProps->type = spawnPropType;
+
+    // Parse properties based on type
+    if (spawnProps->type == "random") {
+        // Handle random properties
+        const char* minAttr = spawnPropNode->Attribute("min");
+        const char* maxAttr = spawnPropNode->Attribute("max");
+
+        if (!minAttr || !maxAttr) {
+            std::cerr << "Error: Missing 'min' or 'max' attributes for random property!" << std::endl;
+            delete spawnProps;
+            return nullptr;
+        }
+
+        if (spawnProps->name == "velocity" || spawnProps->name == "color") {
+            // Parse vec3 values (e.g., velocity, color)
+            spawnProps->minVec3 = ParseVec3(minAttr);
+            spawnProps->maxVec3 = ParseVec3(maxAttr);
+        } else if (spawnProps->name == "size" || spawnProps->name == "lifeTime") {
+            // Parse float values (e.g., size)
+            spawnProps->minFloat = ParseFloat(minAttr);
+            spawnProps->maxFloat = ParseFloat(maxAttr);
+        }
+    } else if (spawnProps->type == "constant") {
+        // Handle constant properties
+        const char* valueAttr = spawnPropNode->Attribute("value");
+
+        if (!valueAttr) {
+            std::cerr << "Error: Missing 'value' attribute for constant property!" << std::endl;
+            delete spawnProps;
+            return nullptr;
+        }
+
+        if (spawnProps->name == "velocity" || spawnProps->name == "color") {
+            // Parse vec3 values (e.g., velocity, color)
+            spawnProps->constVec3 = ParseVec3(valueAttr);
+        } else if (spawnProps->name == "size" || spawnProps->name == "rotation" || spawnProps->name == "lifeTime") {
+            // Parse float values (e.g., size, rotation)
+            spawnProps->constFloat = ParseFloat(valueAttr);
+        }
+    } else {
+        std::cerr << "Error: Unknown property type '" << spawnProps->type << "'!" << std::endl;
+        delete spawnProps;
+        return nullptr;
+    }
+
+    return spawnProps;
+}
 Affector* ParticleSystemFactory::CreateScaleAffector(const TiXmlElement* affectorNode) {
     std::string mode;
     float startScale = 1.0f, endScale = 1.0f;
@@ -265,4 +351,29 @@ Affector* ParticleSystemFactory::CreateFadeAffector(const TiXmlElement* affector
         }
     }
     return new FadeAffector(startAlpha, midAlpha, endAlpha, mode);
+}
+Affector* ParticleSystemFactory::CreateTurbulenceAffector(const TiXmlElement* affectorNode) {
+    float strength = 1.0f;
+    
+    // Loop through each property element to extract values.
+    for (const TiXmlElement* property = affectorNode->FirstChildElement("property"); 
+         property; property = property->NextSiblingElement("property")) {
+        
+        const char* nameAttr = property->Attribute("name");
+        const char* valueAttr = property->Attribute("value");
+        if (!nameAttr || !valueAttr) {
+            std::cerr << "Warning: Missing property name or value in ScaleAffector" << std::endl;
+            continue;
+        }
+        std::string propName(nameAttr);
+        try {
+            if (propName == "strength") {
+                strength = std::stof(valueAttr);
+            } 
+        } catch (const std::exception& e) {
+            std::cerr << "Error parsing ScaleAffector property " << propName << ": " << e.what() << std::endl;
+            return nullptr;
+        }
+    }
+    return new TurbulenceAffector(strength);
 }

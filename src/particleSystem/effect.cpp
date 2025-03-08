@@ -13,12 +13,9 @@ Effect::Effect(){
     SetupRendering();
 }
 Effect::~Effect() {
-    std::cout << "Effect destructor called!" << std::endl;
-
     // Clean up all emitters
     for (Emitter* e : m_pEmitters) {
         if (e) {
-            std::cout << "Deleting emitter: " << e << std::endl;
             delete e;
         }
     }
@@ -26,19 +23,16 @@ Effect::~Effect() {
 
     // Clean up the vertex buffer
     if (m_pVB) {
-        std::cout << "Destroying vertex buffer: " << m_pVB << std::endl;
         wolf::BufferManager::DestroyBuffer(m_pVB);
         m_pVB = nullptr;
     }
 
     // Clean up the vertex declaration
     if (m_pDecl) {
-        std::cout << "Deleting vertex declaration: " << m_pDecl << std::endl;
         delete m_pDecl;
         m_pDecl = nullptr;
     }
     if(m_pTexture){
-        std::cout << "Deleting texture on effect" << m_pTexture << std::endl;
         wolf::TextureManager::DestroyTexture(m_pTexture);
         m_pTexture = nullptr;
     }
@@ -74,6 +68,8 @@ void Effect::Pause(){
 }
 void Effect::AddEmitter(Emitter* e){
     m_pEmitters.push_back(e);
+    this->AddChild(e);
+
 }
 AABB& Effect::CalculateVolume() {
     // Comments are all stolen from debug cube
@@ -131,8 +127,8 @@ void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
     }
 }
 void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& vertices){
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthMask(GL_FALSE);
 
     if(m_pVB == nullptr){
         std::cout << "[ERROR] m_pVB is null | Location: Effect class" << std::endl;
@@ -160,7 +156,7 @@ void Effect::FlushVB(wolf::Material* currMaterial, const std::vector<Point>& ver
 
     glDrawArrays(GL_POINTS, 0, vertices.size());
 
-    glDepthMask(GL_TRUE);
+    //glDepthMask(GL_TRUE);
 }
 
 void Effect::SetupRendering(){

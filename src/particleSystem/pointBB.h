@@ -5,11 +5,22 @@
 #include "emitter.h"
 #include "particle.h"
 
-struct SpawnProperties{
-    glm::vec4 color;
-    glm::vec4 velocity;
+struct SpawnProperties {
+    std::string name; // Property name (e.g., "velocity", "color", "size")
+    std::string type; // Type of property (e.g., "random", "constant")
 
+    // Values for random properties
+    glm::vec3 minVec3; // For vec3 properties (e.g., velocity)
+    glm::vec3 maxVec3;
+    float minFloat;    // For float properties (e.g., size)
+    float maxFloat;
+
+    // Values for constant properties
+    glm::vec3 constVec3; // For vec3 properties (e.g., color)
+    float constFloat;    // For float properties (e.g., rotation)
 };
+
+
 class PointBB : public Particle{
 
     public:

@@ -14,6 +14,7 @@ struct Point{
 };
 
 class PointBB;
+class SpawnProperties;
 
 class Emitter : public Node{
     public:
@@ -46,6 +47,9 @@ class Emitter : public Node{
 
         //Adding Affectors and removing
         void AddAffector(Affector* affector){if(affector) m_affectors.push_back(affector);}
+        // Add A spawn property to be applied to the particles
+
+        void AddSpawnProperty(SpawnProperties* spawnProperty){if(spawnProperty) m_SpawnProperties.push_back(spawnProperty);}
         // Make a remove affector soon Porbably make it by name or something
 
         AABB& CalculateVolume();
@@ -104,6 +108,7 @@ class Emitter : public Node{
             std::cout << "You didn't Add a certain type of emitter" << std::endl;
         }
         void ApplyAffectors(float p_fDelta);
+        void ApplySpawnProperties(PointBB* p, const SpawnProperties* props);
 
         void RecycleParticle(Particle* p);
 
@@ -117,6 +122,7 @@ class Emitter : public Node{
         wolf::Texture* m_pTexture = nullptr;
 
         std::vector<Affector*> m_affectors;
+        std::vector<SpawnProperties*> m_SpawnProperties;
 
         AABB m_bounds;
 

@@ -1,4 +1,0 @@
-<emitter name="sparks" num_particles="300" duration="2.0" type="continuous" birthrate="100">
-    <affector type="direction" direction="1,1,1" speed="3.0"/> <!-- Moves particles in random directions -->
-    <affector type="scale" value="0.5"/> <!-- Scales particles down over time -->
-</emitter>

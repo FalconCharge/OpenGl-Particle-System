@@ -18,6 +18,12 @@ class ScaleAffector : public Affector{
             }
             else if (m_Mode == "Instant") {
                 point->SetSize(m_EndScale);
+            }else if (m_Mode == "Breath") {
+                // Breathing effect using a sine wave
+                float t = point->GetTimeAlive() / point->GetMaxTimeAlive();
+                float oscillation = std::sin(t * 2 * PI);
+                float scale = glm::mix(m_StartScale, m_EndScale, (oscillation + 1.0f) / 2.0f); // Map sine wave to [start, end]
+                point->SetSize(scale);
             }
         }
 

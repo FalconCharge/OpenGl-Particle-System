@@ -70,7 +70,7 @@ void ParticleDriver::Init(){
 
 void ParticleDriver::CreateEffect() {
     // Load the effect from file
-    LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
+    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
 }
 
 
@@ -86,7 +86,7 @@ void ParticleDriver::BuildDemoEnviroment(){
     Scene::Instance().AddNode(pCube1);
 
     // Load the initial effect
-    LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
+    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
 
 }
 void ParticleDriver::LoadEffect(const std::string& filename) {

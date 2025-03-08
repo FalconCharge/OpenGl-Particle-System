@@ -1,13 +1,12 @@
 #include "emitter.h"
 #include "affector.h"
+#include "../utility/Unility.h"
 
 #include <random>
 Emitter::Emitter(){
     
 }
 Emitter::~Emitter() {
-    std::cout << "Emitter destructor called!" << std::endl;
-
     m_particlePool.clear();
     m_pActiveList = nullptr;
     m_pFreeList = nullptr;
@@ -64,7 +63,7 @@ void Emitter::Init(){
 
     SetVolume(CalculateVolume());
 
-    std::cout << "Init Emitter" << std::endl;
+    //std::cout << "Init Emitter" << std::endl;
 }
 void Emitter::AddToPool(Particle* p) {
     p->prev = nullptr;                    // Set the previous pointer of the particle to nullptr (indicating it's at the start of the list)
@@ -109,6 +108,9 @@ void Emitter::SpawnParticle(){
 
     if(p){
         // Get random positions to spawn the Point at
+        for(SpawnProperties* spawnProp : m_SpawnProperties){
+            ApplySpawnProperties(static_cast<PointBB*>(p), spawnProp);
+        }
         SetRandomPosition(p);
         AddToActive(p);
     }else{
@@ -310,6 +312,37 @@ void Emitter::ApplyAffectors(float p_fDelta){
             affector->Apply(point, p_fDelta);
         }
         current = current->next;
+    }
+}
+void Emitter::ApplySpawnProperties(PointBB* particle, const SpawnProperties* props) {
+    if (props->name == "velocity") {
+        if (props->type == "random") {
+            particle->SetVelocity(RandomVec3(props->minVec3, props->maxVec3));
+        } else if (props->type == "constant") {
+            particle->SetVelocity(props->constVec3);
+        }
+    } else if (props->name == "color") {
+        if (props->type == "random") {
+            particle->SetColor(RandomVec3(props->minVec3, props->maxVec3));
+        } else if (props->type == "constant") {
+            particle->SetColor(props->constVec3);
+        }
+    } else if (props->name == "size") {
+        if (props->type == "random") {
+            particle->SetSize(RandomFloat(props->minFloat, props->maxFloat));
+        } else if (props->type == "constant") {
+            particle->SetSize(props->constFloat);
+        }
+    } else if (props->name == "rotation") {
+        if (props->type == "constant") {
+            particle->SetRotation(props->constFloat);
+        }
+    } else if (props->name == "lifeTime") {
+        if(props->type == "random"){
+            particle->SetMaxTimeAlive(RandomFloat(props->minFloat, props->maxFloat));
+        }else if(props->type == "constant"){
+            particle->SetMaxTimeAlive(props->constFloat);
+        }
     }
 }
 AABB& Emitter::CalculateVolume() {
