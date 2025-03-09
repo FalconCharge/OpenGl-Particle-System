@@ -1,4 +1,4 @@
-<emitter name="stress" num_particles="100000" duration="-1" type="BURST" birthrate="1000" burst_count="16000" burst_interval="5">
+<emitter name="stress" num_particles="100000" duration="-1" type="BURST" birthrate="1000" burst_count="16000" burst_interval="5" emitter_size="1, 0, 1">
 
     <spawn_property name="velocity" type="random" min="0,0,0" max="0,0,0"/>
 
@@ -23,7 +23,7 @@
         <property name="end" value="3000"/>     <!-- Fully transparent at the end -->
     </affector>
 
-        <!-- Color Affector -->
+    <!-- Color Affector -->
     <affector type="color">
         <property name="mode" value="OverLife"/>
         <property name="start" value="0.0, 0.0, 0.0"/> <!-- Dark gray for smoke at birth -->

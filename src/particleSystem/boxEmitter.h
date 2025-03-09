@@ -9,6 +9,7 @@ class BoxEmitter : public Emitter{
     public:
         // Setter
         void SetBoxSize(glm::vec3 size){m_size = size;}
+        
         void SetRandomPosition(Particle* p) override{
             PointBB* point = static_cast<PointBB*>(p);
             

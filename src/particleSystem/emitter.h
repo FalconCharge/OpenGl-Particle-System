@@ -34,15 +34,20 @@ class Emitter : public Node{
 
         // Method Effect will call
         void Update(float p_fDelta);
+
+        // Not implemented
         void Play();
         void Stop();
         void Pause();
+        // Not implementeed
 
         // Returns the Material attached to the emitter
         wolf::Material* GetMaterial();
 
         // Add the materials verts to verticesData
         void GetVertexData(std::vector<Point>& verticesData);
+
+        void GetPointBB(std::vector<PointBB*>& verticesPoints);
 
 
         //Adding Affectors and removing

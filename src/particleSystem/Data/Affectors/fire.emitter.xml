@@ -1,4 +1,4 @@
-<emitter name="fire" num_particles="10000" duration="-1" type="continuous" birthrate="500">
+<emitter name="fire" num_particles="10000" duration="-1" type="continuous" birthrate="1000" emitter_size="1, 0, 1">
     <!-- Spawn Properties -->
     <spawn_property name="velocity" type="random" min="-0.2,0.5,-0.2" max="0.2,1.5,0.2"/>
     <spawn_property name="color" type="constant" value="1,0.5,0,1"/> <!-- Orange color -->
@@ -10,7 +10,7 @@
     <!-- Scale Affector -->
     <affector type="scale">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="500"/>
+        <property name="start" value="100"/>
         <property name="end" value="600"/> <!-- Slightly scale up over time -->
     </affector>
 

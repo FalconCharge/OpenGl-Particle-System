@@ -49,6 +49,7 @@ void Emitter::Init(){
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
+    //m_pMaterial->SetDepthWrite(GL_TRUE); This ain't working!
     m_pMaterial->SetDepthTest(false);  // Disabling depth testing for transparency
     m_pMaterial->SetBlend(true);       // Enable blending
     m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_OneMinusSrcAlpha); // Standard transparency blend mode
@@ -289,6 +290,18 @@ void Emitter::CalcBurstTime() {
 wolf::Material* Emitter::GetMaterial(){
     return m_pMaterial;
 }
+void Emitter::GetPointBB(std::vector<PointBB*>& vertexdata){
+    Particle* current = m_pActiveList;
+
+    while(current){
+        PointBB* point = static_cast<PointBB*>(current);
+
+        vertexdata.push_back(point);
+
+        current = current->next;
+    }
+}
+
 void Emitter::GetVertexData(std::vector<Point>& vertexData){
     Particle* currentParticle = m_pActiveList;
 

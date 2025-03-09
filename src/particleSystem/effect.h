@@ -3,6 +3,7 @@
 #include "../nodeClass/node.h"
 #include "../../wolf/wolf.h"
 #include "emitter.h"
+#include <unordered_map>
 
 /*
 //  Top Level which is a container for emitters which is derived from Node (For the position attribute)
@@ -35,10 +36,16 @@ class Effect : public Node{
         
         AABB m_bounds;
 
+        // Grabs all the points; sorts em, and turns them into Points to be rendered in proper order
+        void GetVertexData();
+        std::vector<Point> m_pPoints;
+
+        std::vector<Point> SortPoints(std::vector<PointBB*>);
+
 
         // For Rendering
         void SetupRendering();
-        void FlushVB(wolf::Material* currentMaterial, const std::vector<Point>& vertices);
+        void FlushVB(wolf::Material* currentMaterial, std::vector<Point>& vertices);
 
         wolf::VertexDeclaration* m_pDecl = nullptr; // Declartion
         wolf::VertexBuffer* m_pVB = nullptr;        // Vertex buffer

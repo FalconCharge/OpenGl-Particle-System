@@ -92,6 +92,9 @@ Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, c
         int numParticles = std::stoi(numParticlesAttr); // Convert string to int
         emitter->SetNumParticles(numParticles);
     }
+    if(const char* emitterSize = emitterConfigNode->Attribute("emitter_size")){
+        emitter->SetBoxSize(ParseVec3(emitterSize));
+    }
     if (const char* durationAttr = emitterConfigNode->Attribute("duration")) {
         float duration = std::stof(durationAttr); // Convert string to float
         emitter->SetDuration(duration);
@@ -113,6 +116,7 @@ Emitter* ParticleSystemFactory::CreateEmitter(const TiXmlElement* emitterNode, c
         float burstInterval = std::stof(burstIntervalAttr); // Convert string to float
         emitter->SetBurstInterval(burstInterval);
     }
+    
 
     emitter->SetLocalPosition(offset);
 
