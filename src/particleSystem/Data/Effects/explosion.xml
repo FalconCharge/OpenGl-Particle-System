@@ -1,6 +1,17 @@
-<effect name="fireSmokeEffect" position="0,5,0" scale="1,1,1" rotation="0,0,0">
+<effect name="fireSmokeEffect" position="0,1,0" scale="1,1,1" rotation="0,0,0" texture="Data/textures/particles/smoke_01.png">
     <!-- Smoke Emitter -->
-    <emitter file="src/particleSystem/Data/Affectors/smoke.emitter.xml" offset="0,1,0"/>
-    <!-- Fire Emitter -->
-    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0,0,0"/>
+    <emitter file="src/particleSystem/Data/Affectors/smoke.emitter.xml" offset="0,0.5,0"/>
+
+    <!-- Fire Emitters (Circular Placement) -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="-0.3,0,0.0"/>       <!-- 180° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="-0.212,0,0.212"/>  <!-- 135° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0.0,0,0.3"/>        <!-- 90° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0.212,0,0.212"/>    <!-- 45° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0.3,0,0.0"/>        <!-- 0° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0.212,0,-0.212"/>   <!-- 315° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="0.0,0,-0.3"/>       <!-- 270° -->
+    <emitter file="src/particleSystem/Data/Affectors/fire.emitter.xml" offset="-0.212,0,-0.212"/>  <!-- 225° -->
+
+    <!-- Base Fire Emitter -->
+    <emitter file="src/particleSystem/Data/Affectors/firebase.emitter.xml" offset="0,0,0"/>
 </effect>

@@ -37,7 +37,6 @@ void ParticleDriver::Init(){
     BuildDemoEnviroment();
 }
 void ParticleDriver::update(float p_fDelta){
-    auto start = std::chrono::high_resolution_clock::now();
     //Updates all the Nodes that were added to the scene instance
     Scene::Instance().Update(p_fDelta);
     // Updates the FPS Text
@@ -45,29 +44,6 @@ void ParticleDriver::update(float p_fDelta){
 
     ReloadParticleSystem();
     UpdateEffect();
-
-    auto end = std::chrono::high_resolution_clock::now();
-
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-    // Static variables persist across function calls
-    static int tickCounter = 0;
-    static std::chrono::microseconds totalDuration(0);
-
-    tickCounter++;
-    totalDuration += duration;
-
-    if (tickCounter >= 500) {
-        auto avgDuration = totalDuration.count() / tickCounter;
-        std::cout << "Average time over " << tickCounter 
-                    << " ticks: " << avgDuration << " MicroSeconds\n";
-        // Reset the counters after printing
-        tickCounter = 0;
-        totalDuration = std::chrono::microseconds(0);
-    }
-
-    // Current Stress test 17860952 nano seconds on stress test emitter
-    // 184 with the change of the buffer For Some reason it's a loss?
 }
 void ParticleDriver::render(){
     // Renders all the Nodes that were added the the scene instance
@@ -93,9 +69,47 @@ void ParticleDriver::BuildDemoEnviroment(){
     fileName = "src/particleSystem/Data/Effects/explosion.xml";
     m_effectFileNames.push_back(fileName);
 
+    fileName = "src/particleSystem/Data/Effects/Sparks.xml";
+    m_effectFileNames.push_back(fileName);
 
     LoadEffect(m_effectFileNames.back());
     m_index = m_effectFileNames.size()-1;
+
+}
+void ParticleDriver::LoadWorld(){
+    // Going to create a world and 
+    benWorldActive = true;
+
+    // Creating lighting effect
+    LoadEffect("src/particleSystem/Data/Effects/Sparks.xml");
+    bensEffects.push_back(m_pEffect);
+    LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
+    bensEffects.push_back(m_pEffect);
+    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
+    bensEffects.push_back(m_pEffect);
+
+    // Clear existing effects (if any)
+    for (Effect* effect : bensEffects) {
+        Scene::Instance().RemoveNode(effect);
+        delete effect;
+    }
+    bensEffects.clear();
+
+    // Load and position effects in the world
+    LoadEffect("src/particleSystem/Data/Effects/Sparks.xml");
+    if (m_pEffect) {
+        bensEffects.push_back(m_pEffect);
+    }
+
+    LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
+    if (m_pEffect) {
+        bensEffects.push_back(m_pEffect);
+    }
+
+    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
+    if (m_pEffect) {
+        bensEffects.push_back(m_pEffect);
+    }
 
 }
 void ParticleDriver::LoadEffect(const std::string& filename) {

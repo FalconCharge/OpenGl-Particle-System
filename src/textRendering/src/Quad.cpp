@@ -18,7 +18,7 @@ void Quad::Init() {
 }
 //used to render the Quad with it's own draw call
 void Quad::render(int width, int height) {
-
+    
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

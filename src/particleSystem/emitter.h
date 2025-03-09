@@ -11,6 +11,11 @@ struct Point{
     GLfloat x,y,z,w;       // Position Cords
     GLfloat r, g, b, a;
     GLfloat rotation;
+
+    // Constructor for direct initialization
+    Point(const glm::vec3& pos, const glm::vec3& color, GLfloat size, GLfloat fade, GLfloat rot)
+    : x(pos.x), y(pos.y), z(pos.z), w(size),
+        r(color.r), g(color.g), b(color.b), a(fade), rotation(rot) {}
 };
 
 class PointBB;
@@ -31,7 +36,7 @@ class Emitter : public Node{
         void UpdateSize(float size){if(m_pMaterial) m_pMaterial->SetUniform("size", size);}
         void UpdateRotation(float rotation){if(m_pMaterial) m_pMaterial->SetUniform("Rotation", rotation);}
         void UpdateTexture(wolf::Texture* texture){if(m_pMaterial) m_pMaterial->SetTexture("texture1", texture); m_pTexture = texture;}
-
+        void CreateTexture(std::string fileName);
         // Method Effect will call
         void Update(float p_fDelta);
 
@@ -44,8 +49,6 @@ class Emitter : public Node{
         // Returns the Material attached to the emitter
         wolf::Material* GetMaterial();
 
-        // Add the materials verts to verticesData
-        void GetVertexData(std::vector<Point>& verticesData);
 
         void GetPointBB(std::vector<PointBB*>& verticesPoints);
 
@@ -126,8 +129,6 @@ class Emitter : public Node{
         void ApplySpawnProperties(PointBB* p, const SpawnProperties* props);
 
         void RecycleParticle(Particle* p);
-
-        void SortParticlesByDistance(std::vector<PointBB*>& particles);
         
 
 

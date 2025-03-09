@@ -72,6 +72,7 @@ class ParticleDriver : public wolf::App {
 
         void UpdateEffect();
 
+        void LoadWorld();
 
 
 
@@ -83,5 +84,9 @@ class ParticleDriver : public wolf::App {
         std::vector<std::string> m_effectFileNames;
 
         int m_index = 0;
+
+
+        std::vector<Effect*> bensEffects;
+        bool benWorldActive = false;
 
 };

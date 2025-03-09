@@ -40,8 +40,6 @@ void PointBB::ResetPoint(){
     m_scale = 0;
     //std::cout << "reset values" << std::endl;
 }
-void PointBB::SetSpawnProperties(){
-    
-}
+
 
 

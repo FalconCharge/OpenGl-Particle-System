@@ -11,7 +11,6 @@ Emitter::~Emitter() {
     m_pActiveList = nullptr;
     m_pFreeList = nullptr;
 
-
     // Clean up the material and texture
     if (m_pMaterial) {
         wolf::MaterialManager::DestroyMaterial(m_pMaterial);
@@ -38,19 +37,13 @@ void Emitter::Init(){
     for(PointBB& particle : m_particlePool){
         AddToPool(&particle);
     }
-    /* Previous method Couldn't delete particles in memory some reason (This method sucks)
-    PointBB* pParticles = new PointBB[m_iParticles];
-    for(int i = 0; i < m_iParticles; i++){
-        this->AddToPool(&pParticles[i]);
-    }*/
-
 
     // Create the Material for the emitter
     m_pMaterial = wolf::MaterialManager::CreateMaterial("Emitter Material");
 
     // Enable Depth test and blending and set the shader
     //m_pMaterial->SetDepthWrite(GL_TRUE); This ain't working!
-    m_pMaterial->SetDepthTest(false);  // Disabling depth testing for transparency
+    //m_pMaterial->SetDepthTest(false);  // Disabling depth testing for transparency
     m_pMaterial->SetBlend(true);       // Enable blending
     m_pMaterial->SetBlendMode(wolf::BM_SrcAlpha, wolf::BM_OneMinusSrcAlpha); // Standard transparency blend mode
     m_pMaterial->SetBlendEquation(wolf::BE_Add); // Additive blending
@@ -182,15 +175,6 @@ void Emitter::Update(float p_fDelta){
 
     }
 
-    // Sort particles by distance after collecting
-    SortParticlesByDistance(activeParticles);
-    
-    // Optionally, put the particles back in the linked list (if needed)
-    m_pActiveList = nullptr;
-    for (PointBB* particle : activeParticles) {
-        AddToActive(particle);
-    }
-
     if(m_sMode == "CONTINUOUS"){
         float birth_Rate = 0;
         if (m_bRandomBurstRate){
@@ -301,29 +285,9 @@ void Emitter::GetPointBB(std::vector<PointBB*>& vertexdata){
         current = current->next;
     }
 }
-
-void Emitter::GetVertexData(std::vector<Point>& vertexData){
-    Particle* currentParticle = m_pActiveList;
-
-    while(currentParticle != nullptr){
-        PointBB* point = static_cast<PointBB*>(currentParticle);
-
-        Point pointVertex;
-        pointVertex.x = point->GetPosition().x;
-        pointVertex.y = point->GetPosition().y;
-        pointVertex.z = point->GetPosition().z;
-        pointVertex.w = point->GetSize();
-
-        pointVertex.r = point->GetColor().r;
-        pointVertex.g = point->GetColor().g;
-        pointVertex.b = point->GetColor().b;
-        pointVertex.a = point->GetFade();
-
-        pointVertex.rotation = point->GetRotation();
-
-        vertexData.push_back(pointVertex);
-
-        currentParticle = currentParticle->next;
+void Emitter::CreateTexture(std::string fileName){
+    if(fileName != " "){
+        UpdateTexture(wolf::TextureManager::CreateTexture(fileName));
     }
 }
 
@@ -376,12 +340,5 @@ AABB& Emitter::CalculateVolume() {
 
     m_bounds = AABB(glm::vec3(0, 0, 0), 1000);
     return m_bounds;
-}
-
-void Emitter::SortParticlesByDistance(std::vector<PointBB*>& particles) {
-    // Sort particles from farthest to closest to the camera
-    std::sort(particles.begin(), particles.end(), [](PointBB* a, PointBB* b) {
-        return a->GetCameraDistance() < b->GetCameraDistance();  
-    });
 }
 

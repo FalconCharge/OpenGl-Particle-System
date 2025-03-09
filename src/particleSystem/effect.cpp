@@ -1,6 +1,6 @@
 #include "effect.h"
 
-
+#include <chrono>
 #include <cstdlib>  // For rand()
 #include <ctime>    // For time()
 
@@ -41,6 +41,8 @@ void Effect::Update(float p_fDelta){
     for(Emitter* e: m_pEmitters){
         e->Update(p_fDelta);
     }
+    GetVertexData();  // m_pPoints is now filled with sorted points
+
 }
 void Effect::Init(){
     for(Emitter* e: m_pEmitters){
@@ -68,6 +70,8 @@ void Effect::AddEmitter(Emitter* e){
 }
 
 void Effect::GetVertexData(){
+
+
     m_pPoints.clear();
 
     std::vector<PointBB*> pointBBs;
@@ -77,15 +81,18 @@ void Effect::GetVertexData(){
         e->GetPointBB(pointBBs);
     }
 
+    //RadixSort(pointBBs);
+
+
     // Sort them into a proper order
     m_pPoints = SortPoints(pointBBs);
 
 
 }
 std::vector<Point> Effect::SortPoints(std::vector<PointBB*> pointBBS) {
-    // Sort PointBBs by camera distance (descending order, farthest first)
+
     std::sort(pointBBS.begin(), pointBBS.end(), [](PointBB* a, PointBB* b) {
-        return a->GetCameraDistance() < b->GetCameraDistance();  // Sort by farthest first
+        return a->GetCameraDistance() < b->GetCameraDistance();
     });
 
     // Convert sorted PointBBs into Point structs
@@ -93,24 +100,61 @@ std::vector<Point> Effect::SortPoints(std::vector<PointBB*> pointBBS) {
     sortedPoints.reserve(pointBBS.size());
 
     for (PointBB* bb : pointBBS) {
-        Point p;
-        p.x = bb->GetPosition().x;
-        p.y = bb->GetPosition().y;
-        p.z = bb->GetPosition().z;
-        p.w = bb->GetSize(); 
 
-        p.r = bb->GetColor().r;
-        p.g = bb->GetColor().g;
-        p.b = bb->GetColor().b;
-        p.a = bb->GetFade();
-
-        p.rotation = bb->GetRotation();
-
-        sortedPoints.push_back(p);
+        sortedPoints.emplace_back(bb->GetPosition(), bb->GetColor(), bb->GetSize(), bb->GetFade(), bb->GetRotation());
     }
 
     return sortedPoints;
 }
+void Effect::RadixSort(std::vector<PointBB*>& pointBBS) {
+    // Ensure there are no invalid pointers
+    for (const auto& bb : pointBBS) {
+        if (bb == nullptr) {
+            std::cerr << "Invalid PointBB pointer!" << std::endl;
+            return;  // If there's an invalid pointer, exit the function
+        }
+    }
+
+    // Find the max distance for normalization
+    GLfloat maxDist = 0.0f;
+    for (const auto& bb : pointBBS) {
+        maxDist = std::max(maxDist, std::abs(bb->GetCameraDistance()));  // Use abs to handle negative distances
+    }
+
+    // Perform Radix sort for the distances
+    for (GLfloat exp = 1.0f; maxDist / exp > 1.0f; exp *= 10) {
+        CountSort(pointBBS, exp);
+    }
+}
+
+void Effect::CountSort(std::vector<PointBB*>& pointBBS, GLfloat exp) {
+    std::vector<PointBB*> output(pointBBS.size());
+    int count[10] = {0};  // For storing counts of digits (0-9)
+
+    // Count occurrences of each digit
+    for (auto& bb : pointBBS) {
+        int digit = static_cast<int>(std::abs(bb->GetCameraDistance()) / exp) % 10;  // Use abs for negative distances
+        count[digit]++;
+    }
+
+    // Cumulative count
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build output array (sorted by current digit)
+    for (int i = pointBBS.size() - 1; i >= 0; i--) {
+        int digit = static_cast<int>(std::abs(pointBBS[i]->GetCameraDistance()) / exp) % 10;
+        output[count[digit] - 1] = pointBBS[i];
+        count[digit]--;
+    }
+
+    // Clear the original vector and copy the sorted data back
+    pointBBS.clear();
+    pointBBS.insert(pointBBS.end(), output.begin(), output.end());
+}
+
+
 AABB& Effect::CalculateVolume() {
     // Comments are all stolen from debug cube
     // For now made is the BillBoard is Huge so we don't need to calculate and It will always be in the frustum
@@ -131,9 +175,11 @@ AABB& Effect::CalculateVolume() {
     return m_bounds;
 }
 void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
+    // Can only deal with 1 Material So Not multi Textures emitters
 
     // Gather and sort points
-    GetVertexData();  // m_pPoints is now filled with sorted points
+    //GetVertexData();  // m_pPoints is now filled with sorted points
+    
 
     // For this example, assume all points use the same material.
     // (If they don’t, you need additional data to know which point belongs to which material.)
@@ -148,67 +194,9 @@ void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
     
     // Render the sorted points
     FlushVB(mat, m_pPoints);
-
-    /*
-    // Temps
-    std::vector<Point> batchVerts;
-    wolf::Material* currentMat = nullptr;
-
-    GetVertexData();
-
-    std::unordered_map<wolf::Material*, std::vector<Point>> materialBatches;
-
-    for(Emitter* e : m_pEmitters){
-        wolf::Material* emitterMat = e->GetMaterial();
-        materialBatches[emitterMat].insert(
-            materialBatches[emitterMat].end(),
-            batchVerts.begin(),
-            batchVerts.end()
-        );
-    }
-
-    // Render each batch by material
-    for (auto& [mat, verts] : materialBatches) {
-        if (!verts.empty()) {
-            mat->SetUniform("Proj", p_Proj);
-            mat->SetUniform("View", p_view);
-            FlushVB(mat, verts);
-        }
-    }*/
-
-    /*
-    // Loop through Emitters getting their matterials and rendering em I think It's wrong RN BTW 
-    for(Emitter* e: m_pEmitters){
-        wolf::Material* emitterMat = e->GetMaterial();
-
-        std::vector<Point> emitterVerts;
-        e->GetVertexData(emitterVerts);
-
-        if(currentMat == nullptr){
-            currentMat = emitterMat;
-        }
-        if(emitterMat != currentMat){
-            if(!batchVerts.empty()){
-                // Setting the Project and view matrixs for all material
-                currentMat->SetUniform("Proj", p_Proj);
-                currentMat->SetUniform("View", p_view);
-
-                FlushVB(currentMat, batchVerts);
-                batchVerts.clear();
-            }
-            currentMat = emitterMat;
-        }
-        batchVerts.insert(batchVerts.end(), emitterVerts.begin(), emitterVerts.end());
-    }
-    // Flush any remaining Verts
-    if(!batchVerts.empty() && currentMat != nullptr){
-        currentMat->SetUniform("Proj", p_Proj);
-        currentMat->SetUniform("View", p_view);
-
-        FlushVB(currentMat, batchVerts);
-    }*/
 }
 void Effect::FlushVB(wolf::Material* currMaterial, std::vector<Point>& vertices){
+    glDepthMask(GL_FALSE);
     if(m_pVB == nullptr){
         std::cout << "[ERROR] m_pVB is null | Location: Effect class" << std::endl;
         return;
@@ -221,23 +209,16 @@ void Effect::FlushVB(wolf::Material* currMaterial, std::vector<Point>& vertices)
 
     m_pDecl->Bind();
 
-    // Save the current depth write state
-    GLboolean depthWriteEnabled;
-    glGetBooleanv(GL_DEPTH_WRITEMASK, &depthWriteEnabled);
 
     // This is changing too much IMO I think it's nessarcy though
     // ALso it should be in material But that don't wanna work some reason
     // And I don't wanna try to fix it when I have a fix here
-    if (depthWriteEnabled) {
-        glDepthMask(GL_FALSE);
-    }
 
     // SHould be moved to Material
     glDrawArrays(GL_POINTS, 0, vertices.size());
 
-    // Gotta change it back for the ground
     glDepthMask(GL_TRUE);
-    glEnable(GL_DEPTH_TEST);
+
 }
 
 void Effect::SetupRendering(){

@@ -123,7 +123,7 @@ void DebugCube::Render(glm::mat4 proj, glm::mat4 view){
     // That has the correct values
     */
 
-    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_DEPTH_TEST);
     //glDisable(GL_BLEND);
     //glDepthMask(GL_TRUE);  // Enable depth writing
     //glEnable(GL_DEPTH_TEST);
@@ -163,7 +163,7 @@ void DebugCube::Render(glm::mat4 proj, glm::mat4 view){
         GetVolume().Render(view, proj);
     }
 
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
 
 
 }

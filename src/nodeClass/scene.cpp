@@ -77,7 +77,7 @@ void Scene::SetActiveCamera(Camera* pCam){
 
 void Scene::Render(){
     // Clear the screen
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Should these be moved to init?
@@ -111,7 +111,7 @@ void Scene::Update(float fDelta){
     }
 
     // Redo the culling each time a new scene is made
-    m_objectsToRender = DoCulling();
+    //m_objectsToRender = DoCulling();
 }
 // Pushes children into a single list
 void Scene::CollectAllNodes(std::vector<Node*>& allNodes, Node* node) {

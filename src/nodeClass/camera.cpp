@@ -14,8 +14,9 @@ void Camera::init(){
 void Camera::update(float dt) {
     //Create a new frustum based on new location
     
+    // FIX!
     if(!m_bPauseFrustum){
-        CreateFrustumFromCamera();
+        //CreateFrustumFromCamera();
         //std::cout << "creating frustum" << std::endl;
     }
 

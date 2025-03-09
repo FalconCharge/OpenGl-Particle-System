@@ -1,36 +1,36 @@
-<emitter name="fire" num_particles="10000" duration="-1" type="continuous" birthrate="50" emitter_size="0.5, 0.5, 0.5">
+<emitter name="fire" num_particles="10000" duration="-1" type="continuous" birthrate="5" emitter_size="0.75, 0, 0.75">
     <!-- Spawn Properties -->
-    <spawn_property name="velocity" type="random" min="0.0,0.5,0.0" max="0.1,2.5,0.1"/>
+    <spawn_property name="velocity" type="random" min="0.0,0.1,0.0" max="0.0,0.5,0.0"/>
     <spawn_property name="color" type="constant" value="1,0.5,0,1"/> <!-- Orange color -->
     <spawn_property name="size" type="random" min="10" max="20"/>
-    <spawn_property name="lifeTime" type="random" min="0.5" max="3"/>
+    <spawn_property name="lifeTime" type="random" min="1" max="5"/>
 
     <!-- Additive Blending -->
 
     <!-- Scale Affector -->
     <affector type="scale">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="1000"/>
-        <property name="end" value="600"/> <!-- Slightly scale up over time -->
+        <property name="start" value="5000"/>
+        <property name="end" value="0"/> <!-- Slightly scale up over time -->
     </affector>
 
     <!-- Color Affector -->
     <affector type="color">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="1, 0.5, 0.0"/> <!-- Orange at birth -->
+        <property name="start" value="1, 0.0, 0.0"/> <!-- Orange at birth -->
         <property name="end" value="0.8, 0.3, 0.0"/>  <!-- Fades to red -->
     </affector>
 
     <!-- Fade Affector -->
     <affector type="fade">
         <property name="mode" value="OverLife"/>
-        <property name="start" value="0.0"/>   <!-- Fully opaque at start -->
+        <property name="start" value="0"/>   <!-- Fully opaque at start -->
         <property name="mid" value="1"/>   <!-- Partially transparent in the middle -->
         <property name="end" value="0"/>     <!-- Fully transparent at the end -->
     </affector>
 
     <affector type="turbulence">
-        <property name="strength" value="5"/> <!-- Random movement -->
+        <property name="strength" value="1"/> <!-- Random movement -->
     </affector>
 
 

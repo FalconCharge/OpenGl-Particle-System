@@ -42,6 +42,9 @@ class Effect : public Node{
 
         std::vector<Point> SortPoints(std::vector<PointBB*>);
 
+        void Effect::RadixSort(std::vector<PointBB*>& pointBBS);
+        void Effect::CountSort(std::vector<PointBB*>& pointBBS, GLfloat exp);
+
 
         // For Rendering
         void SetupRendering();

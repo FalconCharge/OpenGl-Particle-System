@@ -1,0 +1,19 @@
+<effect name="lightingEffect" position="0,0,0" scale="1,1,1" rotation="0,0,0" texture="Data/textures/particles/spark_01.png">
+    <!-- Lightning Emitters (Spherical Placement) -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="150.0,0.0,0.0"/>       <!-- +X Axis -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="-150.0,0.0,0.0"/>      <!-- -X Axis -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="0.0,150.0,0.0"/>       <!-- +Y Axis -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="0.0,-150.0,0.0"/>      <!-- -Y Axis -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="0.0,0.0,150.0"/>       <!-- +Z Axis -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="0.0,0.0,-150.0"/>      <!-- -Z Axis -->
+
+    <!-- Diagonal Lightning Emitters -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="100.0,100.0,100.0"/>   <!-- +X, +Y, +Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="-100.0,100.0,100.0"/>  <!-- -X, +Y, +Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="100.0,-100.0,100.0"/>  <!-- +X, -Y, +Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="-100.0,-100.0,100.0"/> <!-- -X, -Y, +Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="100.0,100.0,-100.0"/>  <!-- +X, +Y, -Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="-100.0,100.0,-100.0"/> <!-- -X, +Y, -Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="100.0,-100.0,-100.0"/> <!-- +X, -Y, -Z -->
+    <emitter file="src/particleSystem/Data/Affectors/lighting.emitter.xml" offset="-100.0,-100.0,-100.0"/> <!-- -X, -Y, -Z -->
+</effect>

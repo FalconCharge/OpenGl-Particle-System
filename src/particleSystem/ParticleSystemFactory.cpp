@@ -17,7 +17,7 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
     if(!effectNode){
         std::cout << "Effect Node is null" << std::endl;
     }
-
+    std::string textureFile = " ";
     Effect* effect = new Effect();
 
     // Set the effect name
@@ -35,7 +35,8 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
     // Set the world rotation if provided
     if (const char* rotationAttr = effectNode->Attribute("rotation"))
             effect->setWorldRotation(ParseVec3(std::string(rotationAttr)));
-        
+    if( const char* textureAttr = effectNode->Attribute("texture"))
+            textureFile = textureAttr;
 
     // Parse emitters
     for (const TiXmlElement* emitterNode = effectNode->FirstChildElement("emitter"); emitterNode; emitterNode = emitterNode->NextSiblingElement("emitter")) {
@@ -46,8 +47,9 @@ Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
         Emitter* emitter = CreateEmitter(emitterNode, offset);
         if (emitter) {
             effect->AddEmitter(emitter);
-        
+            
             emitter->Init();
+            emitter->CreateTexture(textureFile);
         }
     }
     return effect;
