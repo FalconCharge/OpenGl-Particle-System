@@ -1,0 +1,20 @@
+<emitter name="star" num_particles="100000" duration="-1" type="BURST" birthrate="10" burst_count="1000" burst_interval="1" emitter_size="1000, 1000, 1000">
+
+    <spawn_property name="lifeTime" type="random" min="20" max="50"/>
+    <spawn_property name="color" type="constant" value="1,1,0,1"/>
+
+    <!-- Fade Affector -->
+    <affector type="fade">
+        <property name="mode" value="OverLife"/>
+        <property name="start" value="0"/>   <!-- Fully opaque at start -->
+        <property name="mid" value="1"/>   <!-- Partially transparent in the middle -->
+        <property name="end" value="0"/>     <!-- Fully transparent at the end -->
+    </affector>
+
+        <!-- Scale Affector -->
+    <affector type="scale">
+        <property name="mode" value="Breath"/>
+        <property name="start" value="4000"/>   <!-- Fully opaque at start -->
+        <property name="end" value="10000"/>     <!-- Fully transparent at the end -->
+    </affector>
+</emitter>

@@ -102,7 +102,5 @@ class PointBB : public Particle{
 
         float cameraDistance;
 
-        SpawnProperties m_pawnProperties;
-
 
 };
