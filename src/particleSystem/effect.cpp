@@ -237,6 +237,7 @@ void Effect::FlushVB(wolf::Material* currMaterial, std::vector<Point>& vertices)
 
     // Gotta change it back for the ground
     glDepthMask(GL_TRUE);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Effect::SetupRendering(){
