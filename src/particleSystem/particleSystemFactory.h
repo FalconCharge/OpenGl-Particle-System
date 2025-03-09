@@ -35,6 +35,9 @@ private:
     static Affector* CreateGravityAffector(const TiXmlElement* affectorNode);
     static Affector* CreateFadeAffector(const TiXmlElement* affectorNode);
     static Affector* CreateTurbulenceAffector(const TiXmlElement* affectorNode);
+    static Affector* CreateDirectionalAffector(const TiXmlElement* affectorNode);
+
+    
 
     
 

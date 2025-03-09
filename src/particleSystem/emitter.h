@@ -48,6 +48,7 @@ class Emitter : public Node{
 
         // Returns the Material attached to the emitter
         wolf::Material* GetMaterial();
+        wolf::Texture* GetTexture(){return m_pTexture;}
 
 
         void GetPointBB(std::vector<PointBB*>& verticesPoints);

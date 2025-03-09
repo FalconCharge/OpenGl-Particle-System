@@ -31,6 +31,11 @@
         <property name="strength" value="-0.1"/> <!-- The strength of gravity -->
     </affector>
 
+    <affector type="directional">
+        <property name="direction" value="0.5, 0.0, 0.0" />  <!-- Direction vector (X-axis) -->
+        <property name="speed" value="0.1" />                <!-- Speed in units per second -->
+    </affector>
+
     <affector type="turbulence">
         <property name="strength" value="1"/> <!-- Random movement -->
     </affector>

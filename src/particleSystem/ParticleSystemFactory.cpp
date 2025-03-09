@@ -11,6 +11,7 @@
 #include "gravityAffector.h"
 #include "fadeAffector.h"
 #include "turbulenceAffector.h"
+#include "movementAffectors.h"
 
 // Factory method to create an Effect
 Effect* ParticleSystemFactory::CreateEffect(const TiXmlElement* effectNode) {
@@ -177,6 +178,8 @@ Affector* ParticleSystemFactory::CreateAffector(const TiXmlElement* affectorNode
         return CreateFadeAffector(affectorNode);
     } else if(typeStr == "turbulence"){
         return CreateTurbulenceAffector(affectorNode);
+    } else if(typeStr == "directional"){
+        return CreateDirectionalAffector(affectorNode);
     }
     // Add more else if statements for additional affector types.
     else {
@@ -391,4 +394,28 @@ Affector* ParticleSystemFactory::CreateTurbulenceAffector(const TiXmlElement* af
         }
     }
     return new TurbulenceAffector(strength);
+}
+Affector* ParticleSystemFactory::CreateDirectionalAffector(const TiXmlElement* affectorNode) {
+    glm::vec3 direction(0.0f, 0.0f, 0.0f);  // Default direction
+    float speed = 1.0f;
+
+    for (const TiXmlElement* property = affectorNode->FirstChildElement("property"); 
+         property; property = property->NextSiblingElement("property")) {
+        
+        const char* nameAttr = property->Attribute("name");
+        const char* valueAttr = property->Attribute("value");
+        if (!nameAttr || !valueAttr) {
+            std::cerr << "Warning: Missing property name or value in GravityAffector" << std::endl;
+            continue;
+        }
+        std::string propName(nameAttr);
+
+        if (propName == "direction") {
+            direction = ParseVec3(valueAttr);  // Helper function to parse the direction vector
+        } else if (propName == "speed") {
+            speed = std::stof(valueAttr);  // Convert string to float for strength
+        }
+    }
+
+    return new DirectionalMoveAffector(direction, speed);
 }

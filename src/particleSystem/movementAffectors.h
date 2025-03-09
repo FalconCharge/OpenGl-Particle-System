@@ -9,11 +9,12 @@ class DirectionalMoveAffector : public Affector{
         ~DirectionalMoveAffector() override = default;
 
 
-        void Apply(Particle* particle, float deltaTime) override {
+        void Apply(Particle* particle, float p_fDeltaTime){
             PointBB* point = static_cast<PointBB*>(particle);
-            glm::vec3 pos = point->GetPosition();
-            pos += m_direction * m_speed * deltaTime;
-            point->SetPosition(pos);
+
+            glm::vec3 velocity = point->GetVelocity();
+            velocity += m_direction * p_fDeltaTime * m_speed;
+            point->SetVelocity(velocity);
         }
 
     private:

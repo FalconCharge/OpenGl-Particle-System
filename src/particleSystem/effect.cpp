@@ -33,7 +33,7 @@ Effect::~Effect() {
         m_pDecl = nullptr;
     }
 
-    std::cout << "Effect Destoryed." << std::endl;
+    //std::cout << "Effect Destoryed." << std::endl;
 }
 
 // Runs the the Emitters and Calls Update
@@ -189,8 +189,11 @@ void Effect::Render(glm::mat4 p_view, glm::mat4 p_Proj){
     
     // Get material from first emitter (or choose your desired one)
     wolf::Material* mat = m_pEmitters[0]->GetMaterial();
+    m_pEmitters[0]->GetTexture();
+    mat->SetTexture("texture1", m_pEmitters[0]->GetTexture());
     mat->SetUniform("Proj", p_Proj);
     mat->SetUniform("View", p_view);
+
     
     // Render the sorted points
     FlushVB(mat, m_pPoints);

@@ -77,21 +77,17 @@ void ParticleDriver::BuildDemoEnviroment(){
 
 }
 void ParticleDriver::LoadWorld(){
-    // Going to create a world and 
-    benWorldActive = true;
 
-    // Creating lighting effect
-    LoadEffect("src/particleSystem/Data/Effects/Sparks.xml");
-    bensEffects.push_back(m_pEffect);
-    LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
-    bensEffects.push_back(m_pEffect);
-    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
-    bensEffects.push_back(m_pEffect);
+    // Reload the effect and its emitters
+    if (m_pEffect) {
+        Scene::Instance().RemoveNode(m_pEffect);
+        delete m_pEffect;
+        m_pEffect = nullptr;
+    }
 
     // Clear existing effects (if any)
     for (Effect* effect : bensEffects) {
         Scene::Instance().RemoveNode(effect);
-        delete effect;
     }
     bensEffects.clear();
 
@@ -100,19 +96,19 @@ void ParticleDriver::LoadWorld(){
     if (m_pEffect) {
         bensEffects.push_back(m_pEffect);
     }
+    m_pEffect = nullptr;
 
     LoadEffect("src/particleSystem/Data/Effects/explosion.xml");
     if (m_pEffect) {
         bensEffects.push_back(m_pEffect);
     }
+    m_pEffect = nullptr;
 
-    LoadEffect("src/particleSystem/Data/Effects/stressTest.xml");
-    if (m_pEffect) {
-        bensEffects.push_back(m_pEffect);
-    }
+    std::cout << "Finished loading Ben's world" <<  std::endl;
 
 }
 void ParticleDriver::LoadEffect(const std::string& filename) {
+
     // Clean up the existing effect
     if (m_pEffect != nullptr) {
         Scene::Instance().RemoveNode(m_pEffect);
@@ -146,29 +142,52 @@ void ParticleDriver::ReloadParticleSystem() {
     if(this->isKeyJustDown('R')){
         std::cout << "Reloading Particle Files" << std::endl;
 
-        Scene::Instance().RemoveNode(m_pEffect);
-        // Reload the effect and its emitters
-        if (m_pEffect) {
-            delete m_pEffect;
-            m_pEffect = nullptr;
+        if(benWorldActive){
+            benWorldActive = true;
+            LoadWorld();
+            
+        }else{
+
+            Scene::Instance().RemoveNode(m_pEffect);
+            // Reload the effect and its emitters
+            if (m_pEffect) {
+                delete m_pEffect;
+                m_pEffect = nullptr;
+            }
+            
+            LoadEffect(m_effectFileNames[m_index]);
         }
-        
-        LoadEffect(m_effectFileNames[m_index]);
     }
 }
 void ParticleDriver::UpdateEffect()
 {
     if (this->isKeyJustDown(GLFW_KEY_SPACE))
-    {
-        if (!m_effectFileNames.empty())
+    {   
+        std::cout << "Swapping worlds!" << std::endl;
+        if(benWorldActive){
+            // Switch Off Ben's world
+            m_index = 0;
+            benWorldActive = false;
+            // Destory stuff
+            // Clear existing effects (if any)
+            for (Effect* effect : bensEffects) {
+                Scene::Instance().RemoveNode(effect);
+            }
+            bensEffects.clear();
+            
+            // Load the effect at index 0
+            LoadEffect(m_effectFileNames[m_index]);
+        }
+        else if (!m_effectFileNames.empty())
         { 
             m_index++;
             if (m_index >= m_effectFileNames.size())
             {
-                m_index = 0;
+                benWorldActive = true;
+                LoadWorld();
+            }else{
+                LoadEffect(m_effectFileNames[m_index]);
             }
-            std::cout << "Reload new effect: " << m_effectFileNames[m_index] << std::endl;
-            LoadEffect(m_effectFileNames[m_index]);
         }
         else
         {

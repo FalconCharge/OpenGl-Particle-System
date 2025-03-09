@@ -32,6 +32,10 @@
     <affector type="turbulence">
         <property name="strength" value="5"/> <!-- Random movement -->
     </affector>
+    <affector type="directional">
+        <property name="direction" value="0.25, 0.0, 0.0" />  <!-- Direction vector (X-axis) -->
+        <property name="speed" value="0.1" />                <!-- Speed in units per second -->
+    </affector>
 
 
 
